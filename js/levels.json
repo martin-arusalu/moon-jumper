@@ -1,0 +1,47 @@
+[
+  {
+    "name": "First steps",
+    "platforms": {
+      "amount": 70,
+      "onebounce": 1000,
+      "moving": 1000
+    },
+    "bg": {
+      "y": -1978,
+      "height": 2778,
+      "distance": 2.3
+    },
+    "points": 5000,
+    "rarity": 5
+  },
+  {
+    "name": "Climbing the trees",
+    "platforms": {
+      "amount": 40,
+      "onebounce": 10,
+      "moving": 5
+    },
+    "bg": {
+      "y": -4811,
+      "height": 3333,
+      "distance": 3
+    },
+    "points": 14000,
+    "rarity": 7
+  },
+  {
+    "name": "Snowy mountains",
+    "platforms": {
+      "amount": 50,
+      "onebounce": 5,
+      "moving": 3
+    },
+    "bg": {
+      "y": -6566,
+      "height": 2056,
+      "distance": 4
+    },
+    "points": 20000,
+    "rarity": 9
+  }
+]
