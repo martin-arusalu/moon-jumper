@@ -9,8 +9,8 @@
 5. Levelup show design + extra notifications during game
 6. Powerups - ideas, code, design
 7. Sounds - backtrack, fx (jump, powerup, breaking, dying)
-8. Cookies
 9. Player selection - boy or girl
+10. Missions
 
 BUGS:
 - Tilting on mobile
@@ -27,6 +27,11 @@ let game = {
 
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
+  // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+  let cookieHighScore = document.cookie.replace(/(?:(?:^|.*;\s*)highScore\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  // End of ref
+  if (cookieHighScore.length > 0)
+    game.highScore = Math.max(new Number(cookieHighScore), game.highScore);
   game.load();
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
@@ -147,6 +152,7 @@ game.showEndScreen = () => {
 
 game.end = () => {
   game.highScore = Math.max(game.highScore, game.score);
+  document.cookie = "highScore=" + game.highScore;
   game.showEndScreen();
   game.started = false;
 }
@@ -208,6 +214,7 @@ game.tilt = e => {
   game.player.x = (maxX * tilt / 180);
 }
 // End of ref
+
 
 //Events
 window.onkeydown = game.keyDown;

@@ -10,8 +10,18 @@ body, html {
   padding: 0;
   overflow: hidden;
 }
-#myCanvas {
-  width: 100vw;
-  height: 100vh;
-  background-color: #fff;
+
+@media (orientation: landscape) {
+  #myCanvas {
+    height: 100vh;
+    width: 62.5vh;
+    background-color: #fff;
+  }
+}
+@media (orientation: portrait) {
+  #myCanvas {
+    width: 100vw;
+    height: 160vw;
+    background-color: #fff;
+  }
 }
