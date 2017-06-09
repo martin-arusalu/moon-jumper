@@ -20,6 +20,13 @@ class Player extends createjs.Sprite {
   }
 
   move() {
+    // Device rotation
+    if (game.tilt != 0) {
+      if (game.tilt < 0 && this.x > 0) this.x += game.tilt / game.sensitivity;
+      if (game.tilt > 0 && this.x < game.stage.canvas.width - this.width) this.x += game.tilt / game.sensitivity;
+    }
+
+    // Arrow keys
     if (game.keys.left && this.x > 0) this.x -= game.moveSpeed;
     if (game.keys.right && this.x < game.stage.canvas.width - this.width) this.x += game.moveSpeed;
   }
@@ -47,7 +54,7 @@ class Player extends createjs.Sprite {
 
   checkBounce() {
     // Fall down
-    if (this.y > game.stage.canvas.height) this.moveUp = true;//game.end();
+    if (this.y + this.height - game.maxSpeed > game.stage.canvas.height) game.end();
     else {
       for (let p of game.platforms) {
         this.moveUp = p.checkBounce();

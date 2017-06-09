@@ -5,11 +5,10 @@
   Clouds (+sun?),
   Airplanes and dark blue sky
   Stars and very dark blue sky
-4. Start and end screens
+4. data and loading screens
 5. Levelup show design + extra notifications during game
 6. Powerups - ideas, code, design
 7. Sounds - backtrack, fx (jump, powerup, breaking, dying)
-9. Player selection - boy or girl
 10. Missions
 
 BUGS:
@@ -22,7 +21,9 @@ let game = {
   highScore: 0,
   maxSpeed: 20,
   moveSpeed: 7,
-  gravity: 1.09
+  gravity: 1.09,
+  sensitivity: 4,
+  tilt: 0,
 }
 
 game.init = () => {
@@ -54,6 +55,9 @@ game.load = () => {
     { id: "bg1", src: "graphics/lvl1bg.png" },
     { id: "bg2", src: "graphics/lvl2bg.png" },
     { id: "bg3", src: "graphics/lvl3bg.png" },
+    { id: "startScreen", src: "graphics/start.png" },
+    { id: "instructionsScreen", src: "graphics/instructions.png" },
+    { id: "endScreen", src: "graphics/end.png" },
     { id: "fredJump", src: "graphics/fredJump/fredJump.json" },
     { id: "platforms", src: "graphics/platforms/platforms.json" }
   ]);
@@ -63,33 +67,6 @@ game.progress = e => {
   let percent = Math.round(e.progress * 100);
   game.loading.text = "Loading: " + percent + "%";
   game.stage.update()
-}
-//deviceorientation
-
-game.showStartScreen = () => {
-  game.stage.removeAllChildren();
-  let title = new createjs.Text("Fly me to the moon", "20px Helvetica", "#111");
-  title.y = 100;
-  let hs = new createjs.Text("Your high score is: " + game.highScore, "16px Helvetica", "#111");
-  hs.y = 130;
-  let tut = new createjs.Text("Press arrow keys to move left and right", "12px Helvetica", "#111");
-  tut.y = 150;
-
-  let startBtn = new createjs.Shape();
-  startBtn.width = 200;
-  startBtn.height = 50;
-  startBtn.graphics.beginFill('#111').drawRect(0, 0, startBtn.width, startBtn.height);
-  startBtn.x = game.stage.canvas.width / 2 - startBtn.width / 2;
-  startBtn.y = 200;
-  startBtn.addEventListener('click', game.start);
-
-  let btntxt = new createjs.Text("New game", "12px Helvetica", "#fff");
-  btntxt.y = startBtn.y + startBtn.height / 2;
-  title.x = hs.x = tut.x = btntxt.x = game.stage.canvas.width / 2;
-  title.textBaseline = hs.textBaseline = tut.textBaseline = btntxt.textBaseline = "middle";
-  title.textAlign = hs.textAlign = tut.textAlign = btntxt.textAlign = "center";
-
-  game.stage.addChild(title, hs, tut, startBtn, btntxt);
 }
 
 game.start = () => {
@@ -126,36 +103,13 @@ game.createBackgrounds = () => {
   };
 }
 
-game.showEndScreen = () => {
-  game.stage.removeAllChildren();
-  let dead = new createjs.Text("You fell down", "20px Helvetica", "#111");
-  dead.y = 100;
-  let s = new createjs.Text("Your score was: " + game.score, "16px Helvetica", "#111");
-  s.y = 130;
-
-  let homeBtn = new createjs.Shape();
-  homeBtn.width = 200;
-  homeBtn.height = 50;
-  homeBtn.graphics.beginFill('#111').drawRect(0, 0, homeBtn.width, homeBtn.height);
-  homeBtn.x = game.stage.canvas.width / 2 - homeBtn.width / 2;
-  homeBtn.y = 200;
-  homeBtn.addEventListener('click', game.showStartScreen);
-
-  let btntxt = new createjs.Text("Home", "12px Helvetica", "#fff");
-  btntxt.y = homeBtn.y + homeBtn.height / 2;
-  dead.x = s.x = btntxt.x = game.stage.canvas.width / 2;
-  dead.textBaseline = s.textBaseline = btntxt.textBaseline = "middle";
-  dead.textAlign = s.textAlign = btntxt.textAlign = "center";
-
-  game.stage.addChild(dead, s, homeBtn, btntxt);
-}
-
 game.end = () => {
   game.highScore = Math.max(game.highScore, game.score);
   document.cookie = "highScore=" + game.highScore;
   game.showEndScreen();
   game.started = false;
 }
+
 game.moveUp = speed => {
   game.platforms.forEach(o => {
     o.y += speed;
@@ -186,13 +140,95 @@ game.onTick = () => {
   game.stage.update();
 }
 
+game.showStartScreen = () => {
+  game.stage.removeAllChildren();
+
+  let screen = new createjs.Bitmap(game.queue.getResult('startScreen'));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let hs = new createjs.Text(game.highScore, "30px riffic", "#fff");
+  hs.y = 500;
+  hs.x = 40;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.x = 108;
+  startBtn.y = 683;
+  startBtn.addEventListener('click', game.start);
+
+  let instructionsBtn = new createjs.Shape();
+  instructionsBtn.graphics.beginFill("#fff").drawRect(0, 0, 140, 138);
+  instructionsBtn.alpha = 0.01;
+  instructionsBtn.x = 0;
+  instructionsBtn.y = 42;
+  instructionsBtn.addEventListener('click', game.showInstructionsScreen);
+
+  game.stage.addChild(screen, hs, startBtn, instructionsBtn);
+}
+
+game.showInstructionsScreen = () => {
+  game.stage.removeAllChildren();
+
+  let screen = new createjs.Bitmap(game.queue.getResult('instructionsScreen'));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.x = 108;
+  startBtn.y = 683;
+  startBtn.addEventListener('click', game.start);
+
+  let homeBtn = new createjs.Shape();
+  homeBtn.graphics.beginFill("#fff").drawRect(0, 0, 100, 70);
+  homeBtn.alpha = 0.01;
+  homeBtn.x = 400;
+  homeBtn.y = 0;
+  homeBtn.addEventListener('click', game.showStartScreen);
+  game.stage.addChild(screen, startBtn, homeBtn);
+}
+
+game.showEndScreen = () => {
+  game.stage.removeAllChildren();
+
+  let screen = new createjs.Bitmap(game.queue.getResult('endScreen'));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let s = new createjs.Text(game.score, "30px riffic", "#fff");
+  s.y = 375;
+  s.x = 50;  
+  
+  let hs = new createjs.Text(game.highScore, "30px riffic", "#fff");
+  hs.y = 515;
+  hs.x = 50;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.x = 108;
+  startBtn.y = 683;
+  startBtn.addEventListener('click', game.start);
+
+  let homeBtn = new createjs.Shape();
+  homeBtn.graphics.beginFill("#fff").drawRect(0, 0, 50, 120);
+  homeBtn.alpha = 0.01;
+  homeBtn.x = 456;
+  homeBtn.y = 577;
+  homeBtn.addEventListener('click', game.showStartScreen);
+  game.stage.addChild(screen, startBtn, homeBtn, hs, s);
+}
+
 game.keyDown = e => {
   if (game.started) {
     switch (e.keyCode) {
       case 37: game.keys.left = true; break;
       case 39: game.keys.right = true; break;
     }
-  }
+  } else if (e.keyCode == 32) game.start();
 }
 
 game.keyUp = e => {
@@ -204,17 +240,12 @@ game.keyUp = e => {
   }
 }
 
-// Ref: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation
 game.tilt = e => {
-  let tilt = e.gamma;
+  game.tilt = e.gamma;
   let maxX = game.stage.canvas.width - game.player.width;
-  if (tilt >  90) tilt =  90;
-  if (tilt < -90) tilt = -90 ;
-  tilt += 90;
-  game.player.x = (maxX * tilt / 180);
+  if (game.tilt >  90) game.tilt =  90;
+  if (game.tilt < -90) game.tilt = -90;
 }
-// End of ref
-
 
 //Events
 window.onkeydown = game.keyDown;
