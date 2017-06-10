@@ -105,7 +105,11 @@ game.createBackgrounds = () => {
 
 game.end = () => {
   game.highScore = Math.max(game.highScore, game.score);
-  document.cookie = "highScore=" + game.highScore;
+
+  // Cookies
+  let t = new Date(Date.now() + 100000000000);
+  document.cookie = "highScore=" + game.highScore + "; expires=" + t.toGMTString() + ";";
+
   game.showEndScreen();
   game.started = false;
 }
