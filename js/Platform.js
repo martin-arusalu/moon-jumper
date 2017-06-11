@@ -4,7 +4,7 @@ class Platform extends createjs.Sprite {
     if (Math.random() * level.platforms.onebounce < 1) type = "onebounce";
     if (Math.random() * level.platforms.moving < 1) type = "moving";
 
-    super(new createjs.SpriteSheet(game.queue.getResult('platforms')), type);
+    super(game.queue.getResult('platforms'), type);
     this.type = type;
     this.scaleX = this.scaleY = 0.15;
     this.width = 75;

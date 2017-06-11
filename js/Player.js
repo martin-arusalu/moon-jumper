@@ -1,6 +1,6 @@
 class Player extends createjs.Sprite {
   constructor() {
-    super(new createjs.SpriteSheet(game.queue.getResult('fredJump')), "fred");
+    super(game.queue.getResult('fredJump'), "fred");
     this.scaleX = this.scaleY = 0.5;
     this.height = 163.5;
     this.width = 90.5;

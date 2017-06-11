@@ -12,7 +12,6 @@
 10. Missions
 
 BUGS:
-- Tilting on mobile
 - Make jumping animation more realistic
 */
 
@@ -28,14 +27,27 @@ let game = {
 
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
-  // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-  let cookieHighScore = document.cookie.replace(/(?:(?:^|.*;\s*)highScore\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  // End of ref
-  if (cookieHighScore.length > 0)
-    game.highScore = Math.max(new Number(cookieHighScore), game.highScore);
+  game.getCookies();
   game.load();
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
+}
+
+game.getCookies = () => {
+  // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+  let cookieHighScore = document.cookie.replace(/(?:(?:^|.*;\s*)highScore\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  let gamesPlayed = document.cookie.replace(/(?:(?:^|.*;\s*)gamesPlayed\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  // End of ref
+  if (cookieHighScore.length > 0)
+    game.highScore = Math.max(new Number(cookieHighScore), game.highScore);
+  if (gamesPlayed.length > 0)
+    game.gamesPlayed = new Number(gamesPlayed);
+}
+
+game.setCookies = () => {
+  let t = new Date(Date.now() + 100000000000);
+  document.cookie = "highScore=" + game.highScore + "; expires=" + t.toGMTString() + ";";
+  document.cookie = "gamesPlayed=" + game.gamesPlayed + "; expires=" + t.toGMTString() + ";";
 }
 
 game.load = () => {
@@ -55,11 +67,14 @@ game.load = () => {
     { id: "bg1", src: "graphics/lvl1bg.png" },
     { id: "bg2", src: "graphics/lvl2bg.png" },
     { id: "bg3", src: "graphics/lvl3bg.png" },
+    { id: "bg4", src: "graphics/lvl4bg.png" },
+    { id: "bg5", src: "graphics/lvl5bg.png" },
+    { id: "bg6", src: "graphics/lvl6bg.png" },
     { id: "startScreen", src: "graphics/start.png" },
     { id: "instructionsScreen", src: "graphics/instructions.png" },
     { id: "endScreen", src: "graphics/end.png" },
-    { id: "fredJump", src: "graphics/fredJump/fredJump.json" },
-    { id: "platforms", src: "graphics/platforms/platforms.json" }
+    { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
+    { id: "platforms", src: "graphics/platforms/platforms.json", "type":"spritesheet" }
   ]);
 }
 
@@ -87,7 +102,7 @@ game.start = () => {
 }
 
 game.createStats = () => {
-  game.stats = new createjs.Text("Score: " + game.score, "35px riffic", "#fdff66");
+  game.stats = new createjs.Text("Score: " + game.score.toLocaleString(), "35px riffic", "#fdff66");
   game.stats.y = 30;
   game.stage.addChild(game.stats);
 }
@@ -105,11 +120,8 @@ game.createBackgrounds = () => {
 
 game.end = () => {
   game.highScore = Math.max(game.highScore, game.score);
-
-  // Cookies
-  let t = new Date(Date.now() + 100000000000);
-  document.cookie = "highScore=" + game.highScore + "; expires=" + t.toGMTString() + ";";
-
+  game.gamesPlayed++;
+  game.setCookies();
   game.showEndScreen();
   game.started = false;
 }
@@ -151,7 +163,7 @@ game.showStartScreen = () => {
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
-  let hs = new createjs.Text(game.highScore, "30px riffic", "#fff");
+  let hs = new createjs.Text(game.highScore.toLocaleString(), "30px riffic", "#fff");
   hs.y = 500;
   hs.x = 40;
 
@@ -202,11 +214,11 @@ game.showEndScreen = () => {
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
-  let s = new createjs.Text(game.score, "30px riffic", "#fff");
+  let s = new createjs.Text(game.score.toLocaleString(), "30px riffic", "#fff");
   s.y = 375;
   s.x = 50;  
   
-  let hs = new createjs.Text(game.highScore, "30px riffic", "#fff");
+  let hs = new createjs.Text(game.highScore.toLocaleString(), "30px riffic", "#fff");
   hs.y = 515;
   hs.x = 50;
 

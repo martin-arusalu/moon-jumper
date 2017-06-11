@@ -2,7 +2,6 @@
   {
     "name": "First steps",
     "platforms": {
-      "amount": 70,
       "onebounce": 1000,
       "moving": 1000
     },
@@ -17,7 +16,6 @@
   {
     "name": "Climbing the trees",
     "platforms": {
-      "amount": 40,
       "onebounce": 10,
       "moving": 5
     },
@@ -32,16 +30,57 @@
   {
     "name": "Snowy mountains",
     "platforms": {
-      "amount": 50,
       "onebounce": 5,
       "moving": 3
     },
     "bg": {
       "y": -6566,
       "height": 2056,
-      "distance": 4
+      "distance": 20
     },
-    "points": 20000,
+    "points": 30000,
+    "rarity": 9
+  },
+  {
+    "name": "Cloudy",
+    "platforms": {
+      "onebounce": 3,
+      "moving": 2
+    },
+    "bg": {
+      "y": -10800,
+      "height": 5000,
+      "distance": 30
+    },
+    "points": 70000,
+    "rarity": 9
+  },
+  {
+    "name": "Stars",
+    "platforms": {
+      "onebounce": 3,
+      "moving": 2
+    },
+    "bg": {
+      "y": -15700,
+      "height": 5000,
+      "distance": 50
+    },
+    "points": 150000,
+    "rarity": 9
+  },
+  {
+    "name": "To the moon!",
+    "platforms": {
+      "onebounce": 3,
+      "moving": 2
+    },
+    "bg": {
+      "y": -20700,
+      "height": 5000,
+      "distance": 1000
+    },
+    "points": 384400000,
     "rarity": 9
   }
 ]
