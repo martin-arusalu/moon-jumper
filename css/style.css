@@ -15,13 +15,13 @@ body, html {
   #myCanvas {
     height: 100vh;
     width: 62.5vh;
-    background-color: #fff;
+    background-color: #111e26;
   }
 }
 @media (orientation: portrait) {
   #myCanvas {
     width: 100vw;
     height: 160vw;
-    background-color: #fff;
+    background-color: #111e26;
   }
 }

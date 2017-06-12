@@ -14,6 +14,7 @@ class Platform extends createjs.Sprite {
     this.dir = "right";
     let platforms = game.platforms.length;
     this.level = level;
+    this.speed = Math.random() * this.level.platformMovingSpeed;
     if (platforms > 0) {
       let l = game.platforms[platforms - 1];
       this.y = l.y - this.height - Math.random() * (game.maxSpeed * level.rarity);
@@ -39,17 +40,16 @@ class Platform extends createjs.Sprite {
   }
 
   move() {
-    let speed = Math.random() * this.level.platformMovingSpeed;
     if (this.dir == "right") {
       if (this.x < game.stage.canvas.width - this.width) {
-        this.x += speed;
-        if (this.powerup != undefined) this.powerup.x += speed;
+        this.x += this.speed;
+        if (this.powerup != undefined) this.powerup.x += this.speed;
       }
       else this.dir = "left";
     } else {
       if (this.x > 0) {
-       this.x -= speed;
-       if (this.powerup != undefined) this.powerup.x -= speed;
+       this.x -= this.speed;
+       if (this.powerup != undefined) this.powerup.x -= this.speed;
       }
       else this.dir = "right";
     }

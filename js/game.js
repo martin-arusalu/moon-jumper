@@ -23,17 +23,14 @@ let game = {
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
   // getting cookies
-  game.cookies.forEach(o => {
-    if (o == "highScore") console.log()
-    game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o));
-  });
+  game.cookies.forEach(o => game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o)));
   game.load();
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
 }
 
 game.load = () => {
-  game.loading = new createjs.Text("Loading", "30px riffic", "#111");
+  game.loading = new createjs.Text("Loading", "40px riffic", "#fff");
   game.loading.textBaseline = "middle";
   game.loading.textAlign = "center";
   game.loading.x = game.stage.canvas.width / 2;
@@ -53,6 +50,8 @@ game.load = () => {
     { id: "startScreen", src: "graphics/start.png" },
     { id: "instructionsScreen", src: "graphics/instructions.png" },
     { id: "endScreen", src: "graphics/end.png" },
+    { id: "statsScreen", src: "graphics/stats.png" },
+    { id: "creditsScreen", src: "graphics/credits.png" },
     { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
     { id: "platforms", src: "graphics/platforms/platforms.json", "type": "spritesheet" },
     { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" },
@@ -92,7 +91,7 @@ game.start = () => {
 }
 
 game.createStats = () => {
-  game.stats = new createjs.Text("Score: " + game.score.toLocaleString(), "35px riffic", "#fdff66");
+  game.stats = new createjs.Text("", "35px riffic", "#fdff66");
   game.stats.y = 30;
   game.stage.addChild(game.stats);
 }
@@ -147,7 +146,7 @@ game.onTick = () => {
     game.player.jump();
     game.player.move();
     for (p of game.platforms.filter(o => o.type == "moving")) p.move();
-    game.stats.text = "Score: " + game.score.toLocaleString();
+    game.stats.text = "Distance: " + game.score.toLocaleString() + " m";
     game.stats.x = game.stage.canvas.width - game.stats.text.length * 18;
     game.stage.setChildIndex(game.stats, game.stage.getNumChildren()-1);
   }
@@ -161,25 +160,26 @@ game.showStartScreen = () => {
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
-  let hs = new createjs.Text(game.highScore.toLocaleString(), "30px riffic", "#fff");
+  let hs = new createjs.Text(game.highScore.toLocaleString() + " m", "30px riffic", "#fff");
   hs.y = 500;
   hs.x = 40;
 
   let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
-  startBtn.x = 108;
-  startBtn.y = 683;
   startBtn.addEventListener('click', game.start);
 
   let instructionsBtn = new createjs.Shape();
-  instructionsBtn.graphics.beginFill("#fff").drawRect(0, 0, 140, 138);
+  instructionsBtn.graphics.beginFill("#fff").drawRect(0, 42, 140, 138);
   instructionsBtn.alpha = 0.01;
-  instructionsBtn.x = 0;
-  instructionsBtn.y = 42;
   instructionsBtn.addEventListener('click', game.showInstructionsScreen);
 
-  game.stage.addChild(screen, hs, startBtn, instructionsBtn);
+  let statsBtn = new createjs.Shape();
+  statsBtn.graphics.beginFill("#fff").drawCircle(455, 25, 70);
+  statsBtn.alpha = 0.01;
+  statsBtn.addEventListener('click', game.showStatsScreen);
+
+  game.stage.addChild(screen, hs, startBtn, instructionsBtn, statsBtn);
 }
 
 game.showInstructionsScreen = () => {
@@ -190,19 +190,79 @@ game.showInstructionsScreen = () => {
   screen.scaleX = screen.scaleY = 0.5;
 
   let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
-  startBtn.x = 108;
-  startBtn.y = 683;
   startBtn.addEventListener('click', game.start);
 
   let homeBtn = new createjs.Shape();
-  homeBtn.graphics.beginFill("#fff").drawRect(0, 0, 100, 70);
+  homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
   homeBtn.alpha = 0.01;
-  homeBtn.x = 400;
-  homeBtn.y = 0;
   homeBtn.addEventListener('click', game.showStartScreen);
+
+  game.creditsBtn = new createjs.Shape();
+  game.creditsBtn.graphics.beginFill("#fff").drawRect(55, 0, 165, 30);
+  game.creditsBtn.alpha = 0.01;
+  game.creditsBtn.addEventListener('click', game.showCreditsScreen);
+
+  game.stage.addChild(screen, startBtn, homeBtn, game.creditsBtn);
+}
+
+game.showCreditsScreen = () => {
+  game.stage.removeAllChildren();
+
+  let screen = new createjs.Bitmap(game.queue.getResult('creditsScreen'));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.addEventListener('click', game.start);
+
+  let homeBtn = new createjs.Shape();
+  homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
+  homeBtn.alpha = 0.01;
+  homeBtn.addEventListener('click', game.showInstructionsScreen);
+
   game.stage.addChild(screen, startBtn, homeBtn);
+}
+
+game.showStatsScreen = () => {
+  game.stage.removeAllChildren();
+
+  let screen = new createjs.Bitmap(game.queue.getResult('statsScreen'));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.addEventListener('click', game.start);
+
+  let homeBtn = new createjs.Shape();
+  homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
+  homeBtn.alpha = 0.01;
+  homeBtn.addEventListener('click', game.showStartScreen);
+
+  let totalDstKm = Math.round(game.totalScore / 10) / 100;
+  let statsTxt = "\nTotal distance: " + totalDstKm.toLocaleString() + " km";
+  statsTxt += "\nBest distance: " + game.highScore.toLocaleString() + " m";
+  statsTxt += "\nLast game distance: " + game.lastScore.toLocaleString() + " m";
+
+  statsTxt += "\n\nGames Played: " + game.gamesPlayed.toLocaleString();
+  statsTxt += "\nTotal time played: " + msToTime(game.totalTime);
+  statsTxt += "\nLast game duration: " + msToTime(game.lastTime);
+  statsTxt += "\nAverage game duration: " + msToTime(game.totalTime / game.gamesPlayed);
+
+  statsTxt += "\n\nTotal platforms jumped: " + game.totalPlatforms.toLocaleString();
+  statsTxt += "\nPlatforms jumped in last game: " + game.lastPlatforms.toLocaleString();
+
+  let stats = new createjs.Text(statsTxt, "18px riffic", "#fff");
+  stats.lineHeight = 30;
+  stats.y = 250;
+  stats.x = 60;
+
+  game.stage.addChild(screen, startBtn, homeBtn, stats);
 }
 
 game.showEndScreen = () => {
@@ -212,27 +272,24 @@ game.showEndScreen = () => {
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
-  let s = new createjs.Text(game.score.toLocaleString(), "30px riffic", "#fff");
+  let s = new createjs.Text(game.score.toLocaleString() + " m", "30px riffic", "#fff");
   s.y = 375;
   s.x = 50;  
   
-  let hs = new createjs.Text(game.highScore.toLocaleString(), "30px riffic", "#fff");
+  let hs = new createjs.Text(game.highScore.toLocaleString() + " m", "30px riffic", "#fff");
   hs.y = 515;
   hs.x = 50;
 
   let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(0, 0, 268, 83);
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
-  startBtn.x = 108;
-  startBtn.y = 683;
   startBtn.addEventListener('click', game.start);
 
   let homeBtn = new createjs.Shape();
-  homeBtn.graphics.beginFill("#fff").drawRect(0, 0, 50, 120);
+  homeBtn.graphics.beginFill("#fff").drawRect(456, 577, 50, 120);
   homeBtn.alpha = 0.01;
-  homeBtn.x = 456;
-  homeBtn.y = 577;
   homeBtn.addEventListener('click', game.showStartScreen);
+
   game.stage.addChild(screen, startBtn, homeBtn, hs, s);
 }
 
@@ -243,7 +300,7 @@ game.keyDown = e => {
       case 39: game.keys.right = true; break;
     }
   } else if (e.keyCode == 32) game.start();
-  else if (e.keyCode == 77) createjs.Sound.muted = !createjs.Sound.muted;
+  if (e.keyCode == 77) createjs.Sound.muted = !createjs.Sound.muted;
 }
 
 game.keyUp = e => {
