@@ -5,11 +5,10 @@
   Clouds (+sun?),
   Airplanes and dark blue sky
   Stars and very dark blue sky
-4. data and loading screens
+4. data, credits and loading screens
 5. Levelup show design + extra notifications during game
-6. Powerups - ideas, code, design
-7. Sounds - backtrack, fx (jump, powerup, breaking, dying)
 10. Missions
+11. Badges (ideas, json, code, showing, screen, design)
 
 BUGS:
 - Make jumping animation more realistic
@@ -17,41 +16,28 @@ BUGS:
 
 let game = {
   started: false,
-  highScore: 0,
   maxSpeed: 20,
   moveSpeed: 7,
   gravity: 1.09,
   sensitivity: 4,
   tilt: 0,
+  cookies: ['highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore']
 }
 
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
-  game.getCookies();
+  // getting cookies
+  game.cookies.forEach(o => {
+    if (o == "highScore") console.log()
+    game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o));
+  });
   game.load();
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
 }
 
-game.getCookies = () => {
-  // Ref: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
-  let cookieHighScore = document.cookie.replace(/(?:(?:^|.*;\s*)highScore\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  let gamesPlayed = document.cookie.replace(/(?:(?:^|.*;\s*)gamesPlayed\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  // End of ref
-  if (cookieHighScore.length > 0)
-    game.highScore = Math.max(new Number(cookieHighScore), game.highScore);
-  if (gamesPlayed.length > 0)
-    game.gamesPlayed = new Number(gamesPlayed);
-}
-
-game.setCookies = () => {
-  let t = new Date(Date.now() + 100000000000);
-  document.cookie = "highScore=" + game.highScore + "; expires=" + t.toGMTString() + ";";
-  document.cookie = "gamesPlayed=" + game.gamesPlayed + "; expires=" + t.toGMTString() + ";";
-}
-
 game.load = () => {
-  game.loading = new createjs.Text("Loading", "30px Helvetica", "#fff");
+  game.loading = new createjs.Text("Loading", "30px riffic", "#111");
   game.loading.textBaseline = "middle";
   game.loading.textAlign = "center";
   game.loading.x = game.stage.canvas.width / 2;
@@ -74,7 +60,8 @@ game.load = () => {
     { id: "instructionsScreen", src: "graphics/instructions.png" },
     { id: "endScreen", src: "graphics/end.png" },
     { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
-    { id: "platforms", src: "graphics/platforms/platforms.json", "type":"spritesheet" }
+    { id: "platforms", src: "graphics/platforms/platforms.json", "type": "spritesheet" },
+    { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" }
   ]);
 }
 
@@ -87,9 +74,10 @@ game.progress = e => {
 game.start = () => {
   game.stage.removeAllChildren();
   game.levels = game.queue.getResult("levels");
+  game.lastPowerups = 0;
   game.platforms = [];
-  game.position = 0;
-  game.score = 0;
+  game.position = game.score = game.lastPowerups = game.lastPlatforms = 0;
+  game.timer = Date.now();
   game.moving = false;
   game.keys = { left: false, right: false }
   game.bg = [];
@@ -121,7 +109,14 @@ game.createBackgrounds = () => {
 game.end = () => {
   game.highScore = Math.max(game.highScore, game.score);
   game.gamesPlayed++;
-  game.setCookies();
+  game.totalTime += game.lastTime = Date.now() - game.timer;
+  game.totalScore += game.lastScore = game.score;
+  game.totalPlatforms += game.lastPlatforms;
+  
+  // Set cookies
+  let t = new Date(Date.now() + 100000000000);
+  game.cookies.forEach(o => document.cookie = o + "=" + game[o] + "; expires=" + t.toGMTString() + ";");
+
   game.showEndScreen();
   game.started = false;
 }
@@ -262,6 +257,21 @@ game.tilt = e => {
   if (game.tilt >  90) game.tilt =  90;
   if (game.tilt < -90) game.tilt = -90;
 }
+
+// Reference: https://stackoverflow.com/a/9763769
+function msToTime(s) {
+  var pad = n => ('00' + n).slice(-2);
+  return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0) + '.' + pad(s%1000, 3);
+}
+// End of reference
+
+// Reference: https://stackoverflow.com/a/10730417
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length == 2) return parts.pop().split(";").shift();
+}
+// End of reference
 
 //Events
 window.onkeydown = game.keyDown;

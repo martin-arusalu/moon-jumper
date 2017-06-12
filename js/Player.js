@@ -21,14 +21,23 @@ class Player extends createjs.Sprite {
 
   move() {
     // Device rotation
-    if (game.tilt != 0) {
-      if (game.tilt < 0 && this.x > 0) this.x += game.tilt / game.sensitivity;
-      if (game.tilt > 0 && this.x < game.stage.canvas.width - this.width) this.x += game.tilt / game.sensitivity;
+    if (game.tilt) {
+      if (game.tilt < 0 && this.x > 0)
+        this.x += game.tilt / game.sensitivity;
+      if (game.tilt > 0 && this.x < game.stage.canvas.width - this.width)
+        this.x += game.tilt / game.sensitivity;
+      this.rotation = game.tilt / 2;
     }
 
     // Arrow keys
-    if (game.keys.left && this.x > 0) this.x -= game.moveSpeed;
-    if (game.keys.right && this.x < game.stage.canvas.width - this.width) this.x += game.moveSpeed;
+    if (game.keys.left && this.x > 0) {
+      this.x -= game.moveSpeed;
+      createjs.Tween.get(this).to({ rotation: -10 }, 100).to({ rotation: 0 }, 200);
+    }
+    if (game.keys.right && this.x < game.stage.canvas.width - this.width) {
+      this.x += game.moveSpeed;
+      createjs.Tween.get(this).to({ rotation: 10 }, 100).to({ rotation: 0 }, 200);
+    }
   }
 
   jump() {

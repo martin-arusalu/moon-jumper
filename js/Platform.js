@@ -5,18 +5,15 @@ class Platform extends createjs.Sprite {
     if (Math.random() * level.platforms.moving < 1) type = "moving";
 
     super(game.queue.getResult('platforms'), type);
+    this.gotoAndStop(type);
     this.type = type;
     this.scaleX = this.scaleY = 0.15;
     this.width = 75;
     this.height = 25;
-
-    /*if (this.type == "branch") {
-      this.scaleX = this.scaleY = 0.18;
-      this.width = 85;
-    }*/
     this.bounces = 0;
     this.dir = "right";
     let platforms = game.platforms.length;
+    this.level = level;
     if (platforms > 0) {
       let l = game.platforms[platforms - 1];
       this.y = l.y - this.height - Math.random() * (game.maxSpeed * level.rarity);
@@ -27,7 +24,8 @@ class Platform extends createjs.Sprite {
     }
     this.position = game.position + (this.y - game.stage.canvas.height) * -1;
 
-    if (Math.random() > 0.8) this.powerup = new Powerup("spring", this);
+    // Randomly spawn a spring
+    if (Math.random() > 0.9) this.powerup = new Powerup("spring", this);
 
     game.stage.addChild(this);
     game.platforms.push(this);
@@ -41,16 +39,17 @@ class Platform extends createjs.Sprite {
   }
 
   move() {
+    let speed = Math.random() * this.level.platformMovingSpeed;
     if (this.dir == "right") {
       if (this.x < game.stage.canvas.width - this.width) {
-        this.x++;
-        if (this.powerup != undefined) this.powerup.x++;
+        this.x += speed;
+        if (this.powerup != undefined) this.powerup.x += speed;
       }
       else this.dir = "left";
     } else {
       if (this.x > 0) {
-        this.x--;
-        if (this.powerup != undefined) this.powerup.x--;
+       this.x -= speed;
+       if (this.powerup != undefined) this.powerup.x -= speed;
       }
       else this.dir = "right";
     }
@@ -58,10 +57,19 @@ class Platform extends createjs.Sprite {
 
   bounce() {
     this.bounces++;
+    game.lastPlatforms++;
     if (this.type == "onebounce") {
       if (this.bounces >= 1) {
         game.stage.removeChild(this);
-        game.platforms.splice(game.platforms.indexOf(this), 1);
+        if (this.powerup)
+          createjs.Tween.get(this.powerup)
+            .to({ alpha: 0 }, 500)
+            .call(() => {
+              this.platform = null;
+              game.platforms.splice(game.platforms.indexOf(this), 1);
+            });
+        else
+          game.platforms.splice(game.platforms.indexOf(this), 1);  
       }
     }
     if (this.powerup != undefined) this.powerup.boost();
