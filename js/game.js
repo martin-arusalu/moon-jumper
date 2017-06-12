@@ -1,5 +1,4 @@
 /* TODO:
-1. Boost animation
 2. Improve platform designs
 3. Level backgrounds -
   Clouds (+sun?),
@@ -9,9 +8,6 @@
 5. Levelup show design + extra notifications during game
 10. Missions
 11. Badges (ideas, json, code, showing, screen, design)
-
-BUGS:
-- Make jumping animation more realistic
 */
 
 let game = {
@@ -46,8 +42,6 @@ game.load = () => {
   
   game.queue = new createjs.LoadQueue(true);
   game.queue.installPlugin(createjs.Sound);
-  game.queue.on("progress", game.progress);
-  game.queue.on('complete', game.showStartScreen);
   game.queue.loadManifest([
     { id: "levels", src: "js/levels.json" },
     { id: "bg1", src: "graphics/lvl1bg.png" },
@@ -61,8 +55,16 @@ game.load = () => {
     { id: "endScreen", src: "graphics/end.png" },
     { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
     { id: "platforms", src: "graphics/platforms/platforms.json", "type": "spritesheet" },
-    { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" }
+    { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" },
+    { id: "boost", src: "sound/boost.mp3" },
+    { id: "crack1", src: "sound/crack1.mp3" },
+    { id: "crack2", src: "sound/crack2.mp3" },
+    { id: "jump1", src: "sound/jump1.mp3" },
+    { id: "jump2", src: "sound/jump2.mp3" },
+    { id: "end", src: "sound/end.mp3" },
   ]);
+  game.queue.on("progress", game.progress);
+  game.queue.on('complete', game.showStartScreen);
 }
 
 game.progress = e => {
@@ -107,6 +109,7 @@ game.createBackgrounds = () => {
 }
 
 game.end = () => {
+  createjs.Sound.play('end');
   game.highScore = Math.max(game.highScore, game.score);
   game.gamesPlayed++;
   game.totalTime += game.lastTime = Date.now() - game.timer;
@@ -240,6 +243,7 @@ game.keyDown = e => {
       case 39: game.keys.right = true; break;
     }
   } else if (e.keyCode == 32) game.start();
+  else if (e.keyCode == 77) createjs.Sound.muted = !createjs.Sound.muted;
 }
 
 game.keyUp = e => {

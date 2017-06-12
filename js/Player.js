@@ -68,6 +68,7 @@ class Player extends createjs.Sprite {
       for (let p of game.platforms) {
         this.moveUp = p.checkBounce();
         if (this.moveUp) { // Bounce on platform
+          // Animation
           this.gotoAndPlay("fred");
           p.bounce();
           this.speed = game.maxSpeed;

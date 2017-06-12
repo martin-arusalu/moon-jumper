@@ -58,21 +58,29 @@ class Platform extends createjs.Sprite {
   bounce() {
     this.bounces++;
     game.lastPlatforms++;
+
+    // Sound
+    if (this.type == "moving") createjs.Sound.play('jump1');
+    else createjs.Sound.play('jump2');
+
     if (this.type == "onebounce") {
-      if (this.bounces >= 1) {
-        game.stage.removeChild(this);
-        if (this.powerup)
-          createjs.Tween.get(this.powerup)
-            .to({ alpha: 0 }, 500)
-            .call(() => {
-              this.platform = null;
-              game.platforms.splice(game.platforms.indexOf(this), 1);
-            });
-        else
-          game.platforms.splice(game.platforms.indexOf(this), 1);  
-      }
+      game.stage.removeChild(this);
+      createjs.Sound.play('crack2');
+      if (this.powerup) {
+        createjs.Tween.get(this.powerup)
+          .to({ alpha: 0 }, 500)
+          .call(() => {
+            this.platform = null;
+            game.platforms.splice(game.platforms.indexOf(this), 1);
+          });
+      } else
+        game.platforms.splice(game.platforms.indexOf(this), 1);
     }
-    if (this.powerup != undefined) this.powerup.boost();
+    if (this.powerup) {
+      let powerup = createjs.Sound.play('boost');
+      powerup.volume = 0.8;
+      this.powerup.boost();
+    }
   }
 
 }
