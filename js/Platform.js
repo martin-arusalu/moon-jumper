@@ -26,7 +26,7 @@ class Platform extends createjs.Sprite {
     this.position = game.position + (this.y - game.stage.canvas.height) * -1;
 
     // Randomly spawn a spring
-    if (Math.random() > 0.9) this.powerup = new Powerup("spring", this);
+    if (Math.random() > 0.9) this.spring = new Spring(this);
 
     game.stage.addChild(this);
     game.platforms.push(this);
@@ -43,13 +43,13 @@ class Platform extends createjs.Sprite {
     if (this.dir == "right") {
       if (this.x < game.stage.canvas.width - this.width) {
         this.x += this.speed;
-        if (this.powerup != undefined) this.powerup.x += this.speed;
+        if (this.spring != undefined) this.spring.x += this.speed;
       }
       else this.dir = "left";
     } else {
       if (this.x > 0) {
        this.x -= this.speed;
-       if (this.powerup != undefined) this.powerup.x -= this.speed;
+       if (this.spring != undefined) this.spring.x -= this.speed;
       }
       else this.dir = "right";
     }
@@ -66,8 +66,8 @@ class Platform extends createjs.Sprite {
     if (this.type == "onebounce") {
       game.stage.removeChild(this);
       createjs.Sound.play('crack2');
-      if (this.powerup) {
-        createjs.Tween.get(this.powerup)
+      if (this.spring) {
+        createjs.Tween.get(this.spring)
           .to({ alpha: 0 }, 500)
           .call(() => {
             this.platform = null;
@@ -76,10 +76,10 @@ class Platform extends createjs.Sprite {
       } else
         game.platforms.splice(game.platforms.indexOf(this), 1);
     }
-    if (this.powerup) {
-      let powerup = createjs.Sound.play('boost');
-      powerup.volume = 0.8;
-      this.powerup.boost();
+    if (this.spring) {
+      let spring = createjs.Sound.play('boost');
+      spring.volume = 0.8;
+      this.spring.boost();
     }
   }
 

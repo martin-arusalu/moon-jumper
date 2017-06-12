@@ -1,12 +1,9 @@
 /* TODO:
-2. Improve platform designs
 3. Level backgrounds -
   Clouds (+sun?),
   Airplanes and dark blue sky
   Stars and very dark blue sky
-4. data, credits and loading screens
 5. Levelup show design + extra notifications during game
-10. Missions
 11. Badges (ideas, json, code, showing, screen, design)
 */
 
@@ -17,7 +14,7 @@ let game = {
   gravity: 1.09,
   sensitivity: 4,
   tilt: 0,
-  cookies: ['highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore']
+  cookies: ['highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore', 'lastSprings', 'totalSprings']
 }
 
 game.init = () => {
@@ -75,9 +72,8 @@ game.progress = e => {
 game.start = () => {
   game.stage.removeAllChildren();
   game.levels = game.queue.getResult("levels");
-  game.lastPowerups = 0;
   game.platforms = [];
-  game.position = game.score = game.lastPowerups = game.lastPlatforms = 0;
+  game.position = game.score = game.lastSprings = game.lastPlatforms = 0;
   game.timer = Date.now();
   game.moving = false;
   game.keys = { left: false, right: false }
@@ -114,6 +110,7 @@ game.end = () => {
   game.totalTime += game.lastTime = Date.now() - game.timer;
   game.totalScore += game.lastScore = game.score;
   game.totalPlatforms += game.lastPlatforms;
+  game.totalSprings += game.lastSprings;
   
   // Set cookies
   let t = new Date(Date.now() + 100000000000);
@@ -126,7 +123,7 @@ game.end = () => {
 game.moveUp = speed => {
   game.platforms.forEach(o => {
     o.y += speed;
-    if (o.powerup != undefined) o.powerup.y += speed;
+    if (o.spring != undefined) o.spring.y += speed;
   });
   game.position += speed;
   if (game.position > game.player.level.points)
@@ -257,9 +254,12 @@ game.showStatsScreen = () => {
   statsTxt += "\n\nTotal platforms jumped: " + game.totalPlatforms.toLocaleString();
   statsTxt += "\nPlatforms jumped in last game: " + game.lastPlatforms.toLocaleString();
 
+  statsTxt += "\n\nTotal springs jumped: " + game.totalSprings.toLocaleString();
+  statsTxt += "\nSprings jumped in last game: " + game.lastSprings.toLocaleString();
+
   let stats = new createjs.Text(statsTxt, "18px riffic", "#fff");
-  stats.lineHeight = 30;
-  stats.y = 250;
+  stats.lineHeight = 28;
+  stats.y = 240;
   stats.x = 60;
 
   game.stage.addChild(screen, startBtn, homeBtn, stats);
