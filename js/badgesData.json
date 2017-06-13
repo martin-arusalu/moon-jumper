@@ -39,61 +39,109 @@
     "type": "dstbadge",
     "property": "score",
     "value": 10000,
-    "text": "10km in game"
+    "text": "10 km in game"
   },
   {
     "type": "dstbadge",
     "property": "score",
-    "value": 50000,
-    "text": "50km in game"
+    "value": 20000,
+    "text": "20 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 40000,
+    "text": "40 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 70000,
+    "text": "70 km in game"
   },
   {
     "type": "dstbadge",
     "property": "score",
     "value": 100000,
-    "text": "100km in game"
+    "text": "100 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 150000,
+    "text": "150 km in game"
   },
   {
     "type": "dstbadge",
     "property": "score",
     "value": 200000,
-    "text": "200km in game"
+    "text": "200 km in game"
   },
   {
     "type": "dstbadge",
     "property": "score",
     "value": 500000,
-    "text": "500km in game"
+    "text": "500 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 10000,
+    "text": "10 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 20000,
+    "text": "20 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 30000,
+    "text": "30 km total"
   },
   {
     "type": "dstbadge",
     "property": "totalScore",
     "value": 50000,
-    "text": "50km total"
+    "text": "50 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 70000,
+    "text": "70 km total"
   },
   {
     "type": "dstbadge",
     "property": "totalScore",
     "value": 100000,
-    "text": "100km total"
+    "text": "100 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 150000,
+    "text": "150 km total"
   },
   {
     "type": "dstbadge",
     "property": "totalScore",
     "value": 200000,
-    "text": "200km total"
+    "text": "200 km total"
   },
   {
     "type": "dstbadge",
     "property": "totalScore",
     "value": 500000,
-    "text": "500km total"
+    "text": "500 km total"
   },
   {
     "type": "dstbadge",
     "property": "totalScore",
     "value": 1000000,
-    "text": "1,000km total"
+    "text": "1,000 km total"
   },
   {
     "type": "gamesbadge",
@@ -107,11 +155,23 @@
     "value": 10,
     "text": "10 games played!"
   },
+   {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 20,
+    "text": "20 games played!"
+  },
   {
     "type": "gamesbadge",
     "property": "gamesPlayed",
-    "value": 50,
-    "text": "50 games played!"
+    "value": 40,
+    "text": "40 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 70,
+    "text": "70 games played!"
   },
   {
     "type": "gamesbadge",
@@ -122,68 +182,110 @@
   {
     "type": "gamesbadge",
     "property": "gamesPlayed",
+    "value": 500,
+    "text": "500 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
     "value": 1000,
     "text": "1k games played!"
   },
   {
     "type": "timebadge",
     "property": "timer",
+    "value": 60000,
+    "text": "1 min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 120000,
+    "text": "2 min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 300000,
+    "text": "5 min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
     "value": 600000,
-    "text": "10min game!"
+    "text": "10 min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 600000,
+    "text": "15 min game!"
   },
   {
     "type": "timebadge",
     "property": "timer",
     "value": 1200000,
-    "text": "20min game!"
+    "text": "20 min game!"
   },
   {
     "type": "timebadge",
     "property": "timer",
     "value": 1800000,
-    "text": "30min game!"
+    "text": "30 min game!"
   },
   {
     "type": "timebadge",
     "property": "timer",
     "value": 3600000,
-    "text": "1h game!"
+    "text": "1 h game!"
   },
   {
     "type": "timebadge",
     "property": "timer",
     "value": 7200000,
-    "text": "2h game!"
+    "text": "2 h game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 600000,
+    "text": "10 min total played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 1200000,
+    "text": "20 min total played!"
   },
   {
     "type": "timebadge",
     "property": "totalTime",
     "value": 1800000,
-    "text": "30min total played!"
+    "text": "30 min total played!"
   },
   {
     "type": "timebadge",
     "property": "totalTime",
     "value": 3600000,
-    "text": "1h total played!"
+    "text": "1 h total played!"
   },
   {
     "type": "timebadge",
     "property": "totalTime",
     "value": 18000000,
-    "text": "5h total played!"
+    "text": "5 h total played!"
   },
   {
     "type": "timebadge",
     "property": "totalTime",
     "value": 36000000,
-    "text": "10h total played!"
+    "text": "10 h total played!"
   },
   {
     "type": "timebadge",
     "property": "totalTime",
     "value": 180000000,
-    "text": "50h total played!"
+    "text": "50 h total played!"
   },
   {
     "type": "platformbadge",
@@ -224,6 +326,12 @@
   {
     "type": "platformbadge",
     "property": "totalPlatforms",
+    "value": 2000,
+    "text": "2k total jumps!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
     "value": 5000,
     "text": "5k total jumps!"
   },
@@ -254,14 +362,32 @@
   {
     "type": "springbadge",
     "property": "lastSprings",
-    "value": 50,
-    "text": "50 springs in game!"
+    "value": 40,
+    "text": "40 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 70,
+    "text": "70 springs in game!"
   },
   {
     "type": "springbadge",
     "property": "lastSprings",
     "value": 100,
     "text": "100 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 150,
+    "text": "150 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 250,
+    "text": "250 springs in game!"
   },
   {
     "type": "springbadge",
@@ -278,8 +404,20 @@
   {
     "type": "springbadge",
     "property": "totalSprings",
+    "value": 50,
+    "text": "Total 50 springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
     "value": 100,
     "text": "Total 100 springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 200,
+    "text": "Total 200 springs jumped!"
   },
   {
     "type": "springbadge",

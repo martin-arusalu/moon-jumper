@@ -84,6 +84,7 @@ game.start = () => {
   game.moving = false;
   game.keys = { left: false, right: false }
   game.bg = [];
+  game.onRecord = false;
   game.createBackgrounds();
   game.createStats();
   game.player = new Player();
@@ -118,8 +119,9 @@ game.createBackgrounds = () => {
 }
 
 game.end = () => {
+  game.started = false;
   let fall = createjs.Sound.play('end');
-  fall.volume = 0.5;
+  fall.volume = 0.1;
   game.highScore = Math.max(game.highScore, game.score);
   game.gamesPlayed++;
   game.totalTime += game.lastTime = Date.now() - game.timer;
@@ -133,7 +135,6 @@ game.end = () => {
   Badge.checkForNewBadges();
 
   game.showEndScreen();
-  game.started = false;
 }
 
 game.moveUp = speed => {
@@ -267,8 +268,8 @@ game.showStatsScreen = () => {
   statsTxt += "\nLast game duration: " + msToTime(game.lastTime);
   statsTxt += "\nAverage game duration: " + msToTime(game.totalTime / game.gamesPlayed);
 
-  statsTxt += "\n\nTotal platforms jumped: " + game.totalPlatforms.toLocaleString();
-  statsTxt += "\nPlatforms jumped in last game: " + game.lastPlatforms.toLocaleString();
+  statsTxt += "\n\nTotal jumps: " + game.totalPlatforms.toLocaleString();
+  statsTxt += "\nJumps in last game: " + game.lastPlatforms.toLocaleString();
 
   statsTxt += "\n\nTotal springs jumped: " + game.totalSprings.toLocaleString();
   statsTxt += "\nSprings jumped in last game: " + game.lastSprings.toLocaleString();

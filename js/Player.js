@@ -88,6 +88,19 @@ class Player extends createjs.Sprite {
           game.createPlatforms();
 
           game.score = Math.floor(Math.max(this.position, game.score));
+          if (game.score > game.highScore && !game.onRecord) {
+            game.onRecord = true;
+            let notification = new createjs.Text('New High!', '50px riffic', '#fdff66');
+            notification.x = game.stage.canvas.width / 2;
+            notification.y = game.stage.canvas.height / 2;
+            notification.textAlign = "center";
+            notification.textBaseline = "middle";
+            game.stage.addChild(notification);
+            createjs.Tween.get(notification)
+              .wait(500)
+              .to({ alpha: 0 }, 1000)
+              .call(() => game.stage.removeChild(notification));
+          }
           break;
         }
       }

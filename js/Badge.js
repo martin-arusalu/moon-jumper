@@ -13,7 +13,6 @@ class Badge extends createjs.Sprite {
     this.txt.textAlign = "center";
     this.txt.y = this.y + this.height + 10;
 
-    console.log("start " + game.newBadges);
     window.setTimeout(() => {
       let container = new createjs.Container();
       container.addChild(this, this.txt);
@@ -25,7 +24,6 @@ class Badge extends createjs.Sprite {
         .call(() => {
           game.stage.removeChild(container);
           game.newBadges--;
-          console.log("end " + game.newBadges);
         });
     }, 4000 * game.newBadges);
     game.newBadges++;
