@@ -1,10 +1,5 @@
 /* TODO:
-3. Level backgrounds -
-  Clouds (+sun?),
-  Airplanes and dark blue sky
-  Stars and very dark blue sky
-5. Levelup show design + extra notifications during game
-11. Badges (ideas, json, code, showing, screen, design)
+1. Badges (json, code, showing, screen)
 */
 
 let game = {
@@ -14,14 +9,17 @@ let game = {
   gravity: 1.09,
   sensitivity: 4,
   tilt: 0,
-  cookies: ['highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore', 'lastSprings', 'totalSprings']
+  newBadges: 0,
+  cookies: ['badges', 'highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore', 'lastSprings', 'totalSprings']
 }
 
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
   // getting cookies
   game.cookies.forEach(o => game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o)));
+  game.badges = Badge.getFromCookie();
   game.load();
+  game.badgeChecker = window.setInterval(Badge.checkForNewBadges, 1000);
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
 }
@@ -38,6 +36,7 @@ game.load = () => {
   game.queue.installPlugin(createjs.Sound);
   game.queue.loadManifest([
     { id: "levels", src: "js/levels.json" },
+    { id: "badgesData", src: "js/badgesData.json" },
     { id: "bg1", src: "graphics/lvl1bg.png" },
     { id: "bg2", src: "graphics/lvl2bg.png" },
     { id: "bg3", src: "graphics/lvl3bg.png" },
@@ -52,12 +51,18 @@ game.load = () => {
     { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
     { id: "platforms", src: "graphics/platforms/platforms.json", "type": "spritesheet" },
     { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" },
+    { id: "badges", src: "graphics/badges/badges.json", "type": "spritesheet" },
+    { id: "unmuted", src: "graphics/unmuted.png" },
+    { id: "muted", src: "graphics/muted.png" },
+    { id: "pause", src: "graphics/pause.png" },
+    { id: "continue", src: "graphics/continue.png" },
     { id: "boost", src: "sound/boost.mp3" },
     { id: "crack1", src: "sound/crack1.mp3" },
     { id: "crack2", src: "sound/crack2.mp3" },
     { id: "jump1", src: "sound/jump1.mp3" },
     { id: "jump2", src: "sound/jump2.mp3" },
     { id: "end", src: "sound/end.mp3" },
+    { id: "newBadge", src: "sound/badge.mp3" },
   ]);
   game.queue.on("progress", game.progress);
   game.queue.on('complete', game.showStartScreen);
@@ -72,6 +77,7 @@ game.progress = e => {
 game.start = () => {
   game.stage.removeAllChildren();
   game.levels = game.queue.getResult("levels");
+  game.allBadges = game.queue.getResult("badgesData");
   game.platforms = [];
   game.position = game.score = game.lastSprings = game.lastPlatforms = 0;
   game.timer = Date.now();
@@ -81,7 +87,9 @@ game.start = () => {
   game.createBackgrounds();
   game.createStats();
   game.player = new Player();
-  game.createPlatforms(game.levels[0]);
+  game.createPlatforms();
+  game.showMute();
+  game.showPause(createjs.Ticker);
   game.started = true;
   window.addEventListener('deviceorientation', game.tilt);
 }
@@ -89,7 +97,13 @@ game.start = () => {
 game.createStats = () => {
   game.stats = new createjs.Text("", "35px riffic", "#fdff66");
   game.stats.y = 30;
-  game.stage.addChild(game.stats);
+  game.stats.x = game.stage.canvas.width - 10;
+  game.stats.textAlign = "right";
+
+  game.badgesCount = new createjs.Text("", "20px riffic", "#fdff66");
+  game.badgesCount.y = 30;
+  game.badgesCount.x = 10;
+  game.stage.addChild(game.stats, game.badgesCount);
 }
 
 game.createBackgrounds = () => {
@@ -104,7 +118,8 @@ game.createBackgrounds = () => {
 }
 
 game.end = () => {
-  createjs.Sound.play('end');
+  let fall = createjs.Sound.play('end');
+  fall.volume = 0.5;
   game.highScore = Math.max(game.highScore, game.score);
   game.gamesPlayed++;
   game.totalTime += game.lastTime = Date.now() - game.timer;
@@ -115,6 +130,7 @@ game.end = () => {
   // Set cookies
   let t = new Date(Date.now() + 100000000000);
   game.cookies.forEach(o => document.cookie = o + "=" + game[o] + "; expires=" + t.toGMTString() + ";");
+  Badge.checkForNewBadges();
 
   game.showEndScreen();
   game.started = false;
@@ -126,28 +142,26 @@ game.moveUp = speed => {
     if (o.spring != undefined) o.spring.y += speed;
   });
   game.position += speed;
-  if (game.position > game.player.level.points)
-    game.player.level = game.levels[game.levels.indexOf(game.player.level) + 1];
   for (let bg of game.bg)
     bg.y += speed / game.player.level.bg.distance;
 }
 
-game.createPlatforms = level => {
-  if (game.platforms.length == 0) new Platform(level);
-  while (game.platforms[game.platforms.length - 1].position < level.points) new Platform(level);
+game.createPlatforms = () => {
+  while (game.platforms.length < 40) new Platform(game.player.level);
   game.stage.setChildIndex(game.player, game.stage.getNumChildren()-1);
 }
 
-game.onTick = () => {
-  if (game.started) {
+game.onTick = (e) => {
+  if (game.started && !e.paused) {
     game.player.jump();
     game.player.move();
     for (p of game.platforms.filter(o => o.type == "moving")) p.move();
-    game.stats.text = "Distance: " + game.score.toLocaleString() + " m";
-    game.stats.x = game.stage.canvas.width - game.stats.text.length * 18;
-    game.stage.setChildIndex(game.stats, game.stage.getNumChildren()-1);
+    game.stats.text = game.score.toLocaleString() + " m";
+    game.stage.setChildIndex(game.stats, game.stage.getNumChildren() - 1);
+    game.badgesCount.text = "Badges: " + game.badges.length + "/" + game.allBadges.length;
+    game.stage.setChildIndex(game.badgesCount, game.stage.getNumChildren() - 1);
   }
-  game.stage.update();
+  game.stage.update(e);
 }
 
 game.showStartScreen = () => {
@@ -177,6 +191,7 @@ game.showStartScreen = () => {
   statsBtn.addEventListener('click', game.showStatsScreen);
 
   game.stage.addChild(screen, hs, startBtn, instructionsBtn, statsBtn);
+  game.showMute();
 }
 
 game.showInstructionsScreen = () => {
@@ -202,6 +217,7 @@ game.showInstructionsScreen = () => {
   game.creditsBtn.addEventListener('click', game.showCreditsScreen);
 
   game.stage.addChild(screen, startBtn, homeBtn, game.creditsBtn);
+  game.showMute();
 }
 
 game.showCreditsScreen = () => {
@@ -222,6 +238,7 @@ game.showCreditsScreen = () => {
   homeBtn.addEventListener('click', game.showInstructionsScreen);
 
   game.stage.addChild(screen, startBtn, homeBtn);
+  game.showMute();
 }
 
 game.showStatsScreen = () => {
@@ -241,8 +258,7 @@ game.showStatsScreen = () => {
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
 
-  let totalDstKm = Math.round(game.totalScore / 10) / 100;
-  let statsTxt = "\nTotal distance: " + totalDstKm.toLocaleString() + " km";
+  let statsTxt = "\nTotal distance: " + game.totalScore.toLocaleString() + " m";
   statsTxt += "\nBest distance: " + game.highScore.toLocaleString() + " m";
   statsTxt += "\nLast game distance: " + game.lastScore.toLocaleString() + " m";
 
@@ -263,6 +279,7 @@ game.showStatsScreen = () => {
   stats.x = 60;
 
   game.stage.addChild(screen, startBtn, homeBtn, stats);
+  game.showMute();
 }
 
 game.showEndScreen = () => {
@@ -272,7 +289,7 @@ game.showEndScreen = () => {
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
-  let s = new createjs.Text(game.score.toLocaleString() + " m", "30px riffic", "#fff");
+  let s = new createjs.Text(game.lastScore.toLocaleString() + " m", "30px riffic", "#fff");
   s.y = 375;
   s.x = 50;  
   
@@ -291,25 +308,62 @@ game.showEndScreen = () => {
   homeBtn.addEventListener('click', game.showStartScreen);
 
   game.stage.addChild(screen, startBtn, homeBtn, hs, s);
+  game.showMute();
+}
+
+game.showMute = () => {
+  if (game.muteBtn != null) {
+    game.stage.removeChild(game.muteBtn);
+    game.muteBtn = null;
+  }
+  if (createjs.Sound.muted) game.muteBtn = new createjs.Bitmap(game.queue.getResult('muted'));
+  else game.muteBtn = new createjs.Bitmap(game.queue.getResult('unmuted'));
+  game.muteBtn.x = 10;
+  game.muteBtn.y = 750;
+  game.muteBtn.scaleX = game.muteBtn.scaleY = 0.3;
+  game.muteBtn.addEventListener('click', () => {
+    createjs.Sound.muted = !createjs.Sound.muted;
+    game.showMute();
+  });
+  game.stage.addChild(game.muteBtn);
+}
+
+game.showPause = (e) => {
+  if (game.pauseBtn != null) {
+    game.stage.removeChild(game.pauseBtn);
+    game.pauseBtn = null;
+  }
+  if (e.paused) game.pauseBtn = new createjs.Bitmap(game.queue.getResult('continue'));
+  else game.pauseBtn = new createjs.Bitmap(game.queue.getResult('pause'));
+  game.pauseBtn.x = 60;
+  game.pauseBtn.y = 750;
+  game.pauseBtn.scaleX = game.pauseBtn.scaleY = 0.4;
+  game.pauseBtn.addEventListener('click', () => {
+    e.paused = !e.paused;
+    game.showPause(e);
+  });
+  game.stage.addChild(game.pauseBtn);
 }
 
 game.keyDown = e => {
-  if (game.started) {
+  if (game.started)
     switch (e.keyCode) {
       case 37: game.keys.left = true; break;
       case 39: game.keys.right = true; break;
     }
-  } else if (e.keyCode == 32) game.start();
-  if (e.keyCode == 77) createjs.Sound.muted = !createjs.Sound.muted;
+  else if (e.keyCode == 32) game.start();
+  if (e.keyCode == 77) {
+    createjs.Sound.muted = !createjs.Sound.muted;
+    game.showMute();
+  }
 }
 
 game.keyUp = e => {
-  if (game.started) {
+  if (game.started)
     switch (e.keyCode) {
       case 37: game.keys.left = false; break;
       case 39: game.keys.right = false; break;
     }
-  }
 }
 
 game.tilt = e => {

@@ -1,82 +1,66 @@
-// Badges:
-/*
-  Levels
-1. First steps - first game / level
-2. The trees - level 2
-3. Mountains - level 3
-4. Clouds - level 4
-5. Outer space - level 5
-6. Approaching the Moon - level 6
-
-  Distance
-10k in game
-50k in game
-100k in game
-200k in game
-500k in game
-
-50k total
-100k total
-200k total
-500k total
-1m total
-
-  Games played
-10 games played
-20 games played
-50 games played
-100 games played
-1k games played
-
-  Time
-10 min game
-20 min game
-30 min game
-1h game
-2h game
-
-30min total
-1h total
-5h total
-10h total
-50h total
-
-  Platforms
-50 platforms in game
-100 platforms in game
-500 platforms in game
-1k platforms in game
-10k platforms in game
-
-1k platforms total
-5k platforms total
-10k platforms total
-30k platforms total
-50k platforms total
-
-  Springs
-20 springs in game
-50 springs in game
-100 springs in game
-500 springs in game
-1k springs in game
-
-100 springs total
-500 springs total
-1k springs total
-5k springs total
-10k springs total
-
-*/
 class Badge extends createjs.Sprite {
-  constructor(platform) {
-    super(game.queue.getResult('badge'), "badge");
-    this.scaleX = this.scaleY = 0.2;
-    this.width = 23.2;
-    this.height = 47.6;
-    this.x = platform.x + platform.width / 2 - this.width / 2;
-    this.y = platform.y - this.height;
-    this.platform = platform;
-    game.stage.addChild(this);
+  constructor(id) {
+    super(game.queue.getResult('badges'), game.allBadges[id].type);
+    this.scaleX = this.scaleY = 0.3;
+    this.width = 150;
+    this.height = 112.8;
+    this.x = game.stage.canvas.width / 2 - this.width / 2;
+    this.y = 500;
+    this.data = game.allBadges[id];
+
+    this.txt = new createjs.Text(this.data.text, '40px riffic', '#fdff66');
+    this.txt.x = game.stage.canvas.width / 2;
+    this.txt.textAlign = "center";
+    this.txt.y = this.y + this.height + 10;
+
+    console.log("start " + game.newBadges);
+    window.setTimeout(() => {
+      let container = new createjs.Container();
+      container.addChild(this, this.txt);
+      game.stage.addChild(container);
+      createjs.Sound.play('newBadge');
+      createjs.Tween.get(container)
+        .wait(1000)
+        .to({ alpha: 0 }, 3000)
+        .call(() => {
+          game.stage.removeChild(container);
+          game.newBadges--;
+          console.log("end " + game.newBadges);
+        });
+    }, 4000 * game.newBadges);
+    game.newBadges++;
+
+    game.badges.push(id);
+    let t = new Date(Date.now() + 100000000000);
+    document.cookie = "badges=" + game.badges.join(',') + "; expires=" + t.toGMTString() + ";";
+  }
+
+  static getFromCookie() {
+    let s = getCookie('badges');
+    if (s) return s.split(',').map(Number);
+    else return [];
+  }
+
+  static checkForNewBadges() {
+    if (game.allBadges != undefined) {
+      game.allBadges.forEach((o, i) => {
+        if (game.badges.indexOf(i) < 0) {
+          let comparable = game.levels.indexOf(game.player.level);
+          switch (o.property) {
+            case 'totalScore': comparable = game.totalScore + (game.started ? game.score : 0); break;
+            case 'timer': comparable = game.started ? Date.now() - game.timer : 0; break;
+            case 'totalTime': comparable = game.totalTime + (game.started ? Date.now() - game.timer : 0); break;
+            case 'totalPlatforms': comparable = game.totalPlatforms + (game.started ? game.lastPlatforms : 0); break;
+            case 'totalSprings': comparable = game.totalSprings + (game.started ? game.lastSprings : 0); break;
+            case 'score':  
+            case 'gamesPlayed':
+            case 'lastPlatforms':  
+            case 'lastSprings': comparable = game[o.property]; break;
+          }
+
+          if (comparable >= o.value) new Badge(i);
+        }
+      });
+    }
   }
 }

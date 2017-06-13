@@ -73,16 +73,19 @@ class Player extends createjs.Sprite {
           p.bounce();
           this.speed = game.maxSpeed;
           this.position = p.position;
-          // New Platforms
-          if (this.y < game.platforms[game.platforms.length - 1].y + game.stage.canvas.height) {
-            game.platforms.forEach((o, i) => {
-              if (o.y > game.stage.canvas.height) {
-                game.platforms.splice(i, 1);
-                game.stage.removeChild(o);
-              }
-            });
-            game.createPlatforms(game.levels[game.levels.indexOf(this.level) + 1]);
+
+          // Evil impossible jumps near the end
+          if (this.position > 300000000) this.level.rarity = 20;
+          
+          // Levelup
+          if (this.position > this.level.points) {
+            this.level = game.levels[game.levels.indexOf(this.level) + 1];
           }
+
+          // Remove passed platforms
+          game.platforms.filter(o => o.y > game.stage.canvas.height).forEach(o => o.clear());
+          // New Platforms
+          game.createPlatforms();
 
           game.score = Math.floor(Math.max(this.position, game.score));
           break;

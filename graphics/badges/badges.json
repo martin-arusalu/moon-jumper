@@ -1,0 +1,25 @@
+{
+
+"images": [
+    "graphics/badges/badges.png"
+],
+
+"frames": [
+    [1, 1, 500, 376, 0, 0, 0],
+    [503, 1, 500, 376, 0, 0, 0],
+    [1, 379, 500, 376, 0, 0, 0],
+    [503, 379, 500, 374, 0, 0, 0],
+    [503, 755, 500, 374, 0, 0, 0],
+    [1, 757, 500, 374, 0, 0, 0]
+],
+
+"animations": {
+    "gamesbadge": { "frames": [0] },
+    "platformbadge": { "frames": [1] },
+    "timebadge": { "frames": [2] },
+    "dstbadge": { "frames": [3] },
+    "lvlbadge": { "frames": [4] },
+    "springbadge": { "frames": [5] }
+}
+
+}

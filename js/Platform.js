@@ -64,23 +64,29 @@ class Platform extends createjs.Sprite {
     else createjs.Sound.play('jump2');
 
     if (this.type == "onebounce") {
-      game.stage.removeChild(this);
       createjs.Sound.play('crack2');
+      createjs.Tween.get(this)
+        .to({ y: game.stage.canvas.height + 100 }, 500, createjs.Ease.circIn)
+        .call(() => {
+          game.platforms.splice(game.platforms.indexOf(this), 1);
+          game.stage.removeChild(this);
+        });
       if (this.spring) {
         createjs.Tween.get(this.spring)
-          .to({ alpha: 0 }, 500)
-          .call(() => {
-            this.platform = null;
-            game.platforms.splice(game.platforms.indexOf(this), 1);
-          });
-      } else
-        game.platforms.splice(game.platforms.indexOf(this), 1);
+          .to({ y: game.stage.canvas.height + 100 }, 500, createjs.Ease.circIn);
+      }
     }
     if (this.spring) {
       let spring = createjs.Sound.play('boost');
       spring.volume = 0.8;
       this.spring.boost();
     }
+  }
+
+  clear() {
+    game.stage.removeChild(this);
+    if (this.spring) game.stage.removeChild(this.spring);
+    game.platforms.splice(game.platforms.indexOf(this), 1);
   }
 
 }

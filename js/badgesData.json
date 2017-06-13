@@ -1,0 +1,308 @@
+[
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 0,
+    "text": "First steps"
+  },
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 1,
+    "text": "Reached the trees!"
+  },
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 2,
+    "text": "Reached the mountains!"
+  },
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 3,
+    "text": "Reached the clouds!"
+  },
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 4,
+    "text": "Outer space!!"
+  },
+  {
+    "type": "lvlbadge",
+    "property": "level",
+    "value": 5,
+    "text": "Approaching the Moon!!!"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 10000,
+    "text": "10km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 50000,
+    "text": "50km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 100000,
+    "text": "100km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 200000,
+    "text": "200km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 500000,
+    "text": "500km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 50000,
+    "text": "50km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 100000,
+    "text": "100km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 200000,
+    "text": "200km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 500000,
+    "text": "500km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 1000000,
+    "text": "1,000km total"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 1,
+    "text": "First game played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 10,
+    "text": "10 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 50,
+    "text": "50 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 100,
+    "text": "100 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 1000,
+    "text": "1k games played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 600000,
+    "text": "10min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 1200000,
+    "text": "20min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 1800000,
+    "text": "30min game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 3600000,
+    "text": "1h game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "timer",
+    "value": 7200000,
+    "text": "2h game!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 1800000,
+    "text": "30min total played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 3600000,
+    "text": "1h total played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 18000000,
+    "text": "5h total played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 36000000,
+    "text": "10h total played!"
+  },
+  {
+    "type": "timebadge",
+    "property": "totalTime",
+    "value": 180000000,
+    "text": "50h total played!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "lastPlatforms",
+    "value": 50,
+    "text": "50 jumps in game!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "lastPlatforms",
+    "value": 100,
+    "text": "100 jumps in game!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "lastPlatforms",
+    "value": 500,
+    "text": "500 jumps in game!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "lastPlatforms",
+    "value": 1000,
+    "text": "1k jumps in game!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "lastPlatforms",
+    "value": 10000,
+    "text": "10k jumps in game!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
+    "value": 1000,
+    "text": "1k total jumps!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
+    "value": 5000,
+    "text": "5k total jumps!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
+    "value": 10000,
+    "text": "10k total jumps!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
+    "value": 30000,
+    "text": "30k total jumps!"
+  },
+  {
+    "type": "platformbadge",
+    "property": "totalPlatforms",
+    "value": 50000,
+    "text": "50k total jumps!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 20,
+    "text": "20 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 50,
+    "text": "50 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 100,
+    "text": "100 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 500,
+    "text": "500 springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "lastSprings",
+    "value": 1000,
+    "text": "1k springs in game!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 100,
+    "text": "Total 100 springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 500,
+    "text": "Total 500 springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 1000,
+    "text": "Total 1k springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 5000,
+    "text": "Total 5k springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "totalSprings",
+    "value": 10000,
+    "text": "Total 10k springs jumped!"
+  }
+]

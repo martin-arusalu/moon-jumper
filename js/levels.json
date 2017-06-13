@@ -9,7 +9,7 @@
     "bg": {
       "y": -1978,
       "height": 2778,
-      "distance": 2.3
+      "distance": 2
     },
     "points": 5000,
     "rarity": 5
@@ -24,9 +24,9 @@
     "bg": {
       "y": -4811,
       "height": 3333,
-      "distance": 3
+      "distance": 3.8
     },
-    "points": 14000,
+    "points": 15000,
     "rarity": 7
   },
   {
@@ -39,7 +39,7 @@
     "bg": {
       "y": -6566,
       "height": 2056,
-      "distance": 15
+      "distance": 8.8
     },
     "points": 30000,
     "rarity": 9
@@ -54,7 +54,7 @@
     "bg": {
       "y": -10800,
       "height": 5000,
-      "distance": 30
+      "distance": 9.2
     },
     "points": 70000,
     "rarity": 9
@@ -69,7 +69,7 @@
     "bg": {
       "y": -15700,
       "height": 5000,
-      "distance": 50
+      "distance": 16
     },
     "points": 150000,
     "rarity": 9
@@ -84,7 +84,7 @@
     "bg": {
       "y": -20700,
       "height": 5000,
-      "distance": 1000
+      "distance": 76850
     },
     "points": 384400000,
     "rarity": 9
