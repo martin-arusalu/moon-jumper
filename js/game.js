@@ -1,7 +1,3 @@
-/* TODO:
-1. Badges (json, code, showing, screen)
-*/
-
 let game = {
   started: false,
   maxSpeed: 20,
@@ -85,6 +81,7 @@ game.start = () => {
   game.keys = { left: false, right: false }
   game.bg = [];
   game.onRecord = false;
+  game.springStreak = 0;
   game.createBackgrounds();
   game.createStats();
   game.player = new Player();

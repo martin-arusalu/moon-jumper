@@ -8,11 +8,13 @@
 body, html {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 @media (orientation: landscape) {
   #myCanvas {
+    display: block;
+    margin: auto;
     height: 100vh;
     width: 62.5vh;
     background-color: #111e26;
@@ -20,6 +22,8 @@ body, html {
 }
 @media (orientation: portrait) {
   #myCanvas {
+    display: block;
+    margin: auto;
     width: 100vw;
     height: 160vw;
     background-color: #111e26;

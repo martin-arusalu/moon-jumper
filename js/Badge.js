@@ -43,17 +43,15 @@ class Badge extends createjs.Sprite {
     if (game.allBadges != undefined) {
       game.allBadges.forEach((o, i) => {
         if (game.badges.indexOf(i) < 0) {
-          let comparable = game.levels.indexOf(game.player.level);
+          let comparable = 0;
           switch (o.property) {
+            case 'level': comparable = game.levels.indexOf(game.player.level); break;
             case 'totalScore': comparable = game.totalScore + (game.started ? game.score : 0); break;
             case 'timer': comparable = game.started ? Date.now() - game.timer : 0; break;
             case 'totalTime': comparable = game.totalTime + (game.started ? Date.now() - game.timer : 0); break;
             case 'totalPlatforms': comparable = game.totalPlatforms + (game.started ? game.lastPlatforms : 0); break;
             case 'totalSprings': comparable = game.totalSprings + (game.started ? game.lastSprings : 0); break;
-            case 'score':  
-            case 'gamesPlayed':
-            case 'lastPlatforms':  
-            case 'lastSprings': comparable = game[o.property]; break;
+            default: comparable = game[o.property]; break;
           }
 
           if (comparable >= o.value) new Badge(i);

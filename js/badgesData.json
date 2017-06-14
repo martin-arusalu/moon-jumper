@@ -57,7 +57,13 @@
     "type": "dstbadge",
     "property": "score",
     "value": 70000,
-    "text": "70 km in game"
+    "text": "60 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 80000,
+    "text": "80 km in game"
   },
   {
     "type": "dstbadge",
@@ -68,8 +74,20 @@
   {
     "type": "dstbadge",
     "property": "score",
+    "value": 120000,
+    "text": "120 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
     "value": 150000,
     "text": "150 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 170000,
+    "text": "170 km in game"
   },
   {
     "type": "dstbadge",
@@ -80,26 +98,26 @@
   {
     "type": "dstbadge",
     "property": "score",
+    "value": 250000,
+    "text": "250 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 300000,
+    "text": "300 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
+    "value": 400000,
+    "text": "400 km in game"
+  },
+  {
+    "type": "dstbadge",
+    "property": "score",
     "value": 500000,
     "text": "500 km in game"
-  },
-  {
-    "type": "dstbadge",
-    "property": "totalScore",
-    "value": 10000,
-    "text": "10 km total"
-  },
-  {
-    "type": "dstbadge",
-    "property": "totalScore",
-    "value": 20000,
-    "text": "20 km total"
-  },
-  {
-    "type": "dstbadge",
-    "property": "totalScore",
-    "value": 30000,
-    "text": "30 km total"
   },
   {
     "type": "dstbadge",
@@ -116,8 +134,20 @@
   {
     "type": "dstbadge",
     "property": "totalScore",
+    "value": 80000,
+    "text": "80 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
     "value": 100000,
     "text": "100 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 120000,
+    "text": "120 km total"
   },
   {
     "type": "dstbadge",
@@ -134,8 +164,32 @@
   {
     "type": "dstbadge",
     "property": "totalScore",
+    "value": 250000,
+    "text": "250 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 300000,
+    "text": "300 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 400000,
+    "text": "400 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
     "value": 500000,
     "text": "500 km total"
+  },
+  {
+    "type": "dstbadge",
+    "property": "totalScore",
+    "value": 700000,
+    "text": "700 km total"
   },
   {
     "type": "dstbadge",
@@ -164,8 +218,14 @@
   {
     "type": "gamesbadge",
     "property": "gamesPlayed",
-    "value": 40,
-    "text": "40 games played!"
+    "value": 30,
+    "text": "30 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 50,
+    "text": "50 games played!"
   },
   {
     "type": "gamesbadge",
@@ -182,14 +242,26 @@
   {
     "type": "gamesbadge",
     "property": "gamesPlayed",
-    "value": 500,
-    "text": "500 games played!"
+    "value": 150,
+    "text": "150 games played!"
   },
   {
     "type": "gamesbadge",
     "property": "gamesPlayed",
-    "value": 1000,
-    "text": "1k games played!"
+    "value": 200,
+    "text": "200 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 300,
+    "text": "300 games played!"
+  },
+  {
+    "type": "gamesbadge",
+    "property": "gamesPlayed",
+    "value": 500,
+    "text": "500 games played!"
   },
   {
     "type": "timebadge",
@@ -442,5 +514,35 @@
     "property": "totalSprings",
     "value": 10000,
     "text": "Total 10k springs jumped!"
+  },
+  {
+    "type": "springbadge",
+    "property": "springStreak",
+    "value": 2,
+    "text": "2 Springs streak"
+  },
+  {
+    "type": "springbadge",
+    "property": "springStreak",
+    "value": 3,
+    "text": "3 Springs streak"
+  },
+  {
+    "type": "springbadge",
+    "property": "springStreak",
+    "value": 4,
+    "text": "4 Springs streak"
+  },
+  {
+    "type": "springbadge",
+    "property": "springStreak",
+    "value": 5,
+    "text": "5 Springs streak"
+  },
+  {
+    "type": "springbadge",
+    "property": "springStreak",
+    "value": 10,
+    "text": "10 Springs streak"
   }
 ]

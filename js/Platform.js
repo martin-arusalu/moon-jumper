@@ -77,9 +77,12 @@ class Platform extends createjs.Sprite {
       }
     }
     if (this.spring) {
+      game.springStreak++;
       let spring = createjs.Sound.play('boost');
       spring.volume = 0.8;
       this.spring.boost();
+    } else {
+      game.springStreak = 0;
     }
   }
 
