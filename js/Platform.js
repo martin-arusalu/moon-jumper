@@ -78,6 +78,7 @@ class Platform extends createjs.Sprite {
     }
     if (this.spring) {
       game.springStreak++;
+      game.bestSpringStreak = Math.max(game.springStreak, game.bestSpringStreak);
       let spring = createjs.Sound.play('boost');
       spring.volume = 0.8;
       this.spring.boost();

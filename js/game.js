@@ -1,3 +1,4 @@
+// Main object that contains everything exept utility functions.
 let game = {
   started: false,
   maxSpeed: 20,
@@ -6,21 +7,26 @@ let game = {
   sensitivity: 4,
   tilt: 0,
   newBadges: 0,
-  cookies: ['badges', 'highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore', 'lastSprings', 'totalSprings']
+  cookies: ['badges', 'highScore', 'gamesPlayed', 'totalTime', 'lastTime', 'totalPlatforms', 'lastPlatforms', 'lastScore', 'totalScore', 'lastSprings', 'totalSprings', 'bestSpringStreak']
 }
 
+// After window loads initialize game.
 game.init = () => {
   game.stage = new createjs.Stage('myCanvas');
-  // getting cookies
+  // getting cookies. Cookie name corresponds to a property in game object
   game.cookies.forEach(o => game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o)));
   game.badges = Badge.getFromCookie();
+  // Loading
   game.load();
+  // Check for new achievements every second
   game.badgeChecker = window.setInterval(Badge.checkForNewBadges, 1000);
+  // Start ticking.
   createjs.Ticker.addEventListener('tick', game.onTick);
   createjs.Ticker.setFPS(60);
 }
 
 game.load = () => {
+  // Loading text
   game.loading = new createjs.Text("Loading", "40px riffic", "#fff");
   game.loading.textBaseline = "middle";
   game.loading.textAlign = "center";
@@ -28,6 +34,7 @@ game.load = () => {
   game.loading.y = game.stage.canvas.height / 2;
   game.stage.addChild(game.loading);
   
+  // Preloading
   game.queue = new createjs.LoadQueue(true);
   game.queue.installPlugin(createjs.Sound);
   game.queue.loadManifest([
@@ -64,12 +71,14 @@ game.load = () => {
   game.queue.on('complete', game.showStartScreen);
 }
 
+// While game is loading
 game.progress = e => {
   let percent = Math.round(e.progress * 100);
-  game.loading.text = "Loading: " + percent + "%";
+  game.loading.text = "Loading: " + percent + "%"; // Show percentage of loading progress
   game.stage.update()
 }
 
+// Resets single game data and starts a new game
 game.start = () => {
   game.stage.removeAllChildren();
   game.levels = game.queue.getResult("levels");
@@ -93,28 +102,40 @@ game.start = () => {
 }
 
 game.createStats = () => {
-  game.stats = new createjs.Text("", "35px riffic", "#fdff66");
-  game.stats.y = 30;
-  game.stats.x = game.stage.canvas.width - 10;
-  game.stats.textAlign = "right";
+  // Creates the score or distance text element
+  game.scoreTxt = new createjs.Text("", "35px riffic", "#fdff66");
 
+  // And positions it in the top right part of the screen
+  game.scoreTxt.y = 30;
+  game.scoreTxt.x = game.stage.canvas.width - 10;
+  game.scoreTxt.textAlign = "right";
+
+  // Creates the badges text element
   game.badgesCount = new createjs.Text("", "20px riffic", "#fdff66");
+
+  // And positions it to the top right part of the screen
   game.badgesCount.y = 30;
   game.badgesCount.x = 10;
-  game.stage.addChild(game.stats, game.badgesCount);
+  game.stage.addChild(game.scoreTxt, game.badgesCount);
 }
 
 game.createBackgrounds = () => {
-  for (let i = game.levels.length - 1; i >= 0; i--) {
-    let bg = new createjs.Bitmap(game.queue.getResult("bg" + (i+1)));
+  for (let i = game.levels.length - 1; i >= 0; i--) { // Get all the background images
+    // Get the image
+    let bg = new createjs.Bitmap(game.queue.getResult("bg" + (i + 1)));
+    
+    // Position them under each other
     bg.x = 0;
     bg.y = game.levels[i].bg.y;
+    
+    // Background moving speed
     bg.distance = game.levels[i].bg.distance;
     game.stage.addChild(bg);
     game.bg.push(bg);
   };
 }
 
+// End game
 game.end = () => {
   game.started = false;
   let fall = createjs.Sound.play('end');
@@ -127,17 +148,19 @@ game.end = () => {
   game.totalSprings += game.lastSprings;
   
   // Set cookies
-  let t = new Date(Date.now() + 100000000000);
+  let t = new Date(Date.now() + 100000000000); // Set expiration date to looong in the future
   game.cookies.forEach(o => document.cookie = o + "=" + game[o] + "; expires=" + t.toGMTString() + ";");
   Badge.checkForNewBadges();
 
   game.showEndScreen();
 }
 
-game.moveUp = speed => {
+// Move the environment  (seems like player moving up, but environment moving down actually)
+game.moveUp = speed => { // param speed - the speed player is currently moving
+  // Move the platforms down
   game.platforms.forEach(o => {
     o.y += speed;
-    if (o.spring != undefined) o.spring.y += speed;
+    if (o.spring) o.spring.y += speed; // also move the springs on platforms (if any)
   });
   game.position += speed;
   for (let bg of game.bg)
@@ -154,8 +177,8 @@ game.onTick = (e) => {
     game.player.jump();
     game.player.move();
     for (p of game.platforms.filter(o => o.type == "moving")) p.move();
-    game.stats.text = game.score.toLocaleString() + " m";
-    game.stage.setChildIndex(game.stats, game.stage.getNumChildren() - 1);
+    game.scoreTxt.text = game.score.toLocaleString() + " m";
+    game.stage.setChildIndex(game.scoreTxt, game.stage.getNumChildren() - 1);
     game.badgesCount.text = "Badges: " + game.badges.length + "/" + game.allBadges.length;
     game.stage.setChildIndex(game.badgesCount, game.stage.getNumChildren() - 1);
   }
@@ -259,21 +282,23 @@ game.showStatsScreen = () => {
   let statsTxt = "\nTotal distance: " + game.totalScore.toLocaleString() + " m";
   statsTxt += "\nBest distance: " + game.highScore.toLocaleString() + " m";
   statsTxt += "\nLast game distance: " + game.lastScore.toLocaleString() + " m";
+  statsTxt += "\nAverage game distance: " + Math.round((game.totalScore / game.gamesPlayed)).toLocaleString() + " m";
 
   statsTxt += "\n\nGames Played: " + game.gamesPlayed.toLocaleString();
-  statsTxt += "\nTotal time played: " + msToTime(game.totalTime);
-  statsTxt += "\nLast game duration: " + msToTime(game.lastTime);
-  statsTxt += "\nAverage game duration: " + msToTime(game.totalTime / game.gamesPlayed);
+  statsTxt += "\nTotal time played: " + msToTimeWords(game.totalTime);
+  statsTxt += "\nLast game duration: " + msToTimeWords(game.lastTime);
 
   statsTxt += "\n\nTotal jumps: " + game.totalPlatforms.toLocaleString();
   statsTxt += "\nJumps in last game: " + game.lastPlatforms.toLocaleString();
 
   statsTxt += "\n\nTotal springs jumped: " + game.totalSprings.toLocaleString();
   statsTxt += "\nSprings jumped in last game: " + game.lastSprings.toLocaleString();
+  statsTxt += "\nBest spring jump streak: " + game.bestSpringStreak;
+
 
   let stats = new createjs.Text(statsTxt, "18px riffic", "#fff");
   stats.lineHeight = 28;
-  stats.y = 240;
+  stats.y = 180;
   stats.x = 60;
 
   game.stage.addChild(screen, startBtn, homeBtn, stats);
@@ -374,9 +399,16 @@ game.tilt = e => {
 // Reference: https://stackoverflow.com/a/9763769
 function msToTime(s) {
   var pad = n => ('00' + n).slice(-2);
-  return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0) + '.' + pad(s%1000, 3);
+  return pad(s/3.6e6|0) + ':' + pad((s%3.6e6)/6e4 | 0) + ':' + pad((s%6e4)/1000|0);
 }
 // End of reference
+
+function msToTimeWords(s) {
+  let words = (s / 3.6e6 | 0) ? (s / 3.6e6 | 0) + ' h ' : '';
+  words += ((s % 3.6e6) / 6e4 | 0) ? ((s % 3.6e6) / 6e4 | 0) + ' min ' : '';
+  words += ((s % 6e4) / 1000 | 0) + ' s';
+  return words;
+}
 
 // Reference: https://stackoverflow.com/a/10730417
 function getCookie(name) {
