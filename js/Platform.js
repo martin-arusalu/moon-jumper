@@ -15,11 +15,11 @@ class Platform extends createjs.Sprite {
     let platforms = game.platforms.length;
     this.level = level;
     this.speed = Math.random() * this.level.platformMovingSpeed;
-    if (platforms > 0) {
+    if (platforms > 0) { // If more than platforms, place the new one within the reach of a jump
       let l = game.platforms[platforms - 1];
       this.y = l.y - this.height - Math.random() * (game.maxSpeed * level.rarity);
       this.x = Math.random() * (game.stage.canvas.width - this.width);
-    } else {
+    } else { // If first platform, put it in the bottom center of the screen
       this.y = game.stage.canvas.height - this.height - 5;
       this.x = game.stage.canvas.width / 2 - this.width / 2;
     }
@@ -33,28 +33,33 @@ class Platform extends createjs.Sprite {
   }
 
   checkBounce() {
+    // Basicly a hit test but only to check if players feet touch the top of the platform
     return !(game.player.x + game.player.width / 2 - game.player.hitWidth / 2 >= this.x + this.width ||
       game.player.x + game.player.width / 2 + game.player.hitWidth / 2 <= this.x ||
       game.player.y + game.player.height >= this.y + this.height ||
       game.player.y + game.player.height < this.y);
   }
 
+  // For moving platforms  
   move() {
     if (this.dir == "right") {
       if (this.x < game.stage.canvas.width - this.width) {
         this.x += this.speed;
+        // If platform has a spring, move it as well
         if (this.spring != undefined) this.spring.x += this.speed;
       }
       else this.dir = "left";
     } else {
       if (this.x > 0) {
-       this.x -= this.speed;
-       if (this.spring != undefined) this.spring.x -= this.speed;
+        this.x -= this.speed;
+        // If platform has a spring, move it as well 
+        if (this.spring != undefined) this.spring.x -= this.speed;
       }
       else this.dir = "right";
     }
   }
 
+  // Player lands on a platform  
   bounce() {
     this.bounces++;
     game.lastPlatforms++;
@@ -63,16 +68,16 @@ class Platform extends createjs.Sprite {
     if (this.type == "moving") createjs.Sound.play('jump1');
     else createjs.Sound.play('jump2');
 
+    // If a sandstone    
     if (this.type == "onebounce") {
       createjs.Sound.play('crack2');
       createjs.Tween.get(this)
+        // Make it fall down  
         .to({ y: game.stage.canvas.height + 100 }, 500, createjs.Ease.circIn)
-        .call(() => {
-          game.platforms.splice(game.platforms.indexOf(this), 1);
-          game.stage.removeChild(this);
-        });
+        .call(this.clear);
       if (this.spring) {
         createjs.Tween.get(this.spring)
+          // Make the spring fall down with the platform  
           .to({ y: game.stage.canvas.height + 100 }, 500, createjs.Ease.circIn);
       }
     }
@@ -82,9 +87,7 @@ class Platform extends createjs.Sprite {
       let spring = createjs.Sound.play('boost');
       spring.volume = 0.8;
       this.spring.boost();
-    } else {
-      game.springStreak = 0;
-    }
+    } else game.springStreak = 0;
   }
 
   clear() {

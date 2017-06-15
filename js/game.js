@@ -50,7 +50,6 @@ game.load = () => {
     { id: "instructionsScreen", src: "graphics/instructions.png" },
     { id: "endScreen", src: "graphics/end.png" },
     { id: "statsScreen", src: "graphics/stats.png" },
-    { id: "creditsScreen", src: "graphics/credits.png" },
     { id: "fredJump", src: "graphics/fredJump/fredJump.json", "type":"spritesheet" },
     { id: "platforms", src: "graphics/platforms/platforms.json", "type": "spritesheet" },
     { id: "spring", src: "graphics/spring/spring.json", "type": "spritesheet" },
@@ -162,40 +161,58 @@ game.moveUp = speed => { // param speed - the speed player is currently moving
     o.y += speed;
     if (o.spring) o.spring.y += speed; // also move the springs on platforms (if any)
   });
-  game.position += speed;
+  game.position += speed; // bottom edge of the screen
   for (let bg of game.bg)
+    // Move the background by the speed defined for it
     bg.y += speed / game.player.level.bg.distance;
 }
 
+// New platforms on every jump
 game.createPlatforms = () => {
+  // On every jump create new platforms until total is 40
   while (game.platforms.length < 40) new Platform(game.player.level);
+  
+  // Set the player on top of everything
   game.stage.setChildIndex(game.player, game.stage.getNumChildren()-1);
 }
 
+// Every frame (60fps)
 game.onTick = (e) => {
+  // Only do stuff when in game
   if (game.started && !e.paused) {
     game.player.jump();
     game.player.move();
+
+    // Move the movable platforms
     for (p of game.platforms.filter(o => o.type == "moving")) p.move();
+
+    // Update score and set it on top of everything
     game.scoreTxt.text = game.score.toLocaleString() + " m";
     game.stage.setChildIndex(game.scoreTxt, game.stage.getNumChildren() - 1);
+
+    // Upadte the badges count and set it on top of everything
     game.badgesCount.text = "Badges: " + game.badges.length + "/" + game.allBadges.length;
     game.stage.setChildIndex(game.badgesCount, game.stage.getNumChildren() - 1);
   }
   game.stage.update(e);
 }
 
+// Just the open screen
 game.showStartScreen = () => {
+  // Clear everything
   game.stage.removeAllChildren();
 
+  // Image of the screen (static elements)
   let screen = new createjs.Bitmap(game.queue.getResult('startScreen'));
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
+  // Show high score
   let hs = new createjs.Text(game.highScore.toLocaleString() + " m", "30px riffic", "#fff");
   hs.y = 500;
   hs.x = 40;
 
+  // Create transparent buttons for listening clicks
   let startBtn = new createjs.Shape();
   startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
@@ -211,17 +228,23 @@ game.showStartScreen = () => {
   statsBtn.alpha = 0.01;
   statsBtn.addEventListener('click', game.showStatsScreen);
 
+  // Add elements to screen
   game.stage.addChild(screen, hs, startBtn, instructionsBtn, statsBtn);
+
+  // Show mute state
   game.showMute();
 }
 
 game.showInstructionsScreen = () => {
+  // Clear everything
   game.stage.removeAllChildren();
 
+  // Show screen image (static elements)  
   let screen = new createjs.Bitmap(game.queue.getResult('instructionsScreen'));
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
+  // Create transparent buttons for listening clicks
   let startBtn = new createjs.Shape();
   startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
@@ -232,43 +255,23 @@ game.showInstructionsScreen = () => {
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
 
-  game.creditsBtn = new createjs.Shape();
-  game.creditsBtn.graphics.beginFill("#fff").drawRect(55, 0, 165, 30);
-  game.creditsBtn.alpha = 0.01;
-  game.creditsBtn.addEventListener('click', game.showCreditsScreen);
-
+  // Add elements to screen
   game.stage.addChild(screen, startBtn, homeBtn, game.creditsBtn);
-  game.showMute();
-}
 
-game.showCreditsScreen = () => {
-  game.stage.removeAllChildren();
-
-  let screen = new createjs.Bitmap(game.queue.getResult('creditsScreen'));
-  screen.x = screen.y = 0;
-  screen.scaleX = screen.scaleY = 0.5;
-
-  let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
-  startBtn.alpha = 0.01;
-  startBtn.addEventListener('click', game.start);
-
-  let homeBtn = new createjs.Shape();
-  homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
-  homeBtn.alpha = 0.01;
-  homeBtn.addEventListener('click', game.showInstructionsScreen);
-
-  game.stage.addChild(screen, startBtn, homeBtn);
+  // Show mute status
   game.showMute();
 }
 
 game.showStatsScreen = () => {
+  // Clear everything
   game.stage.removeAllChildren();
 
+  // Show screen image (static elements)  
   let screen = new createjs.Bitmap(game.queue.getResult('statsScreen'));
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
+  // Create transparent buttons for listening clicks
   let startBtn = new createjs.Shape();
   startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
@@ -279,6 +282,7 @@ game.showStatsScreen = () => {
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
 
+  // Text about statistics
   let statsTxt = "\nTotal distance: " + game.totalScore.toLocaleString() + " m";
   statsTxt += "\nBest distance: " + game.highScore.toLocaleString() + " m";
   statsTxt += "\nLast game distance: " + game.lastScore.toLocaleString() + " m";
@@ -295,31 +299,39 @@ game.showStatsScreen = () => {
   statsTxt += "\nSprings jumped in last game: " + game.lastSprings.toLocaleString();
   statsTxt += "\nBest spring jump streak: " + game.bestSpringStreak;
 
-
+  // Create stats element
   let stats = new createjs.Text(statsTxt, "18px riffic", "#fff");
   stats.lineHeight = 28;
   stats.y = 180;
   stats.x = 60;
 
+  // Add elements to screen  
   game.stage.addChild(screen, startBtn, homeBtn, stats);
+
+  // Show mute status
   game.showMute();
 }
 
 game.showEndScreen = () => {
+  // Clear all
   game.stage.removeAllChildren();
 
+  // Show screen image (static elements)  
   let screen = new createjs.Bitmap(game.queue.getResult('endScreen'));
   screen.x = screen.y = 0;
   screen.scaleX = screen.scaleY = 0.5;
 
+  // Score of the game that just ended  
   let s = new createjs.Text(game.lastScore.toLocaleString() + " m", "30px riffic", "#fff");
   s.y = 375;
   s.x = 50;  
   
+  // Your high score
   let hs = new createjs.Text(game.highScore.toLocaleString() + " m", "30px riffic", "#fff");
   hs.y = 515;
   hs.x = 50;
 
+  // Create transparent buttons for listening clicks  
   let startBtn = new createjs.Shape();
   startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
   startBtn.alpha = 0.01;
@@ -330,44 +342,62 @@ game.showEndScreen = () => {
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
 
+  // Add elements to stage
   game.stage.addChild(screen, startBtn, homeBtn, hs, s);
+
+  // Show mute status
   game.showMute();
 }
 
+// Create / Recreate the button for toggling mute status.
 game.showMute = () => {
+  // Reset mute button
   if (game.muteBtn != null) {
     game.stage.removeChild(game.muteBtn);
     game.muteBtn = null;
   }
+
+  // If muted show one logo otherwise show the other one.
   if (createjs.Sound.muted) game.muteBtn = new createjs.Bitmap(game.queue.getResult('muted'));
   else game.muteBtn = new createjs.Bitmap(game.queue.getResult('unmuted'));
   game.muteBtn.x = 10;
   game.muteBtn.y = 750;
   game.muteBtn.scaleX = game.muteBtn.scaleY = 0.3;
+
+  // On click reverse the mute status and show the logo again.
   game.muteBtn.addEventListener('click', () => {
     createjs.Sound.muted = !createjs.Sound.muted;
     game.showMute();
   });
+
+  // Add to screen
   game.stage.addChild(game.muteBtn);
 }
 
 game.showPause = (e) => {
+  // Reset pausing button
   if (game.pauseBtn != null) {
     game.stage.removeChild(game.pauseBtn);
     game.pauseBtn = null;
   }
+  // If paused show one logo otherwise show the other one.
   if (e.paused) game.pauseBtn = new createjs.Bitmap(game.queue.getResult('continue'));
   else game.pauseBtn = new createjs.Bitmap(game.queue.getResult('pause'));
   game.pauseBtn.x = 60;
   game.pauseBtn.y = 750;
   game.pauseBtn.scaleX = game.pauseBtn.scaleY = 0.4;
+
+  // On click reverse the paused status and show the logo again.
   game.pauseBtn.addEventListener('click', () => {
     e.paused = !e.paused;
     game.showPause(e);
   });
+
+  // Add to stage
   game.stage.addChild(game.pauseBtn);
 }
 
+// Check if key is pressed down
 game.keyDown = e => {
   if (game.started)
     switch (e.keyCode) {
@@ -381,6 +411,7 @@ game.keyDown = e => {
   }
 }
 
+// Check if key is released
 game.keyUp = e => {
   if (game.started)
     switch (e.keyCode) {
@@ -389,6 +420,7 @@ game.keyUp = e => {
     }
 }
 
+// When rotating or tilting the screen
 game.tilt = e => {
   game.tilt = e.gamma;
   let maxX = game.stage.canvas.width - game.player.width;

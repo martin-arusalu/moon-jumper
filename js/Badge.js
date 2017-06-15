@@ -13,6 +13,7 @@ class Badge extends createjs.Sprite {
     this.txt.textAlign = "center";
     this.txt.y = this.y + this.height + 10;
 
+    // If there are more than one achievement to show, show them in order and with 4s intervals   
     window.setTimeout(() => {
       let container = new createjs.Container();
       container.addChild(this, this.txt);
@@ -35,15 +36,22 @@ class Badge extends createjs.Sprite {
 
   static getFromCookie() {
     let s = getCookie('badges');
+    // If there is a cookie (which is numbers separated with commas)
+      // split the numbers to make an array of string numbers
+      // Then create a new array by converting every string to number
     if (s) return s.split(',').map(Number);
+    // If no cookie, return empty array.  
     else return [];
   }
 
   static checkForNewBadges() {
+    // If badges are loaded
     if (game.allBadges != undefined) {
       game.allBadges.forEach((o, i) => {
+        // If player doesn't have this badge 
         if (game.badges.indexOf(i) < 0) {
           let comparable = 0;
+          // Which value to compare
           switch (o.property) {
             case 'level': comparable = game.levels.indexOf(game.player.level); break;
             case 'totalScore': comparable = game.totalScore + (game.started ? game.score : 0); break;
@@ -54,6 +62,7 @@ class Badge extends createjs.Sprite {
             default: comparable = game[o.property]; break;
           }
 
+          // If challenge completed create a new badge
           if (comparable >= o.value) new Badge(i);
         }
       });

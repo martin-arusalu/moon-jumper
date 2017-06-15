@@ -11,6 +11,7 @@ class Spring extends createjs.Sprite {
     game.stage.addChild(this);
   }
 
+// Boosting player up  
   boost() {
     this.gotoAndPlay("spring");
     game.lastSprings++;
