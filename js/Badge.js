@@ -13,7 +13,7 @@ class Badge extends createjs.Sprite {
     this.txt.textAlign = "center";
     this.txt.y = this.y + this.height + 10;
 
-    // If there are more than one achievement to show, show them in order and with 4s intervals   
+    // If there are more than one achievement to show, show them in order and with 3s intervals   
     window.setTimeout(() => {
       let container = new createjs.Container();
       container.addChild(this, this.txt);
@@ -26,7 +26,7 @@ class Badge extends createjs.Sprite {
           game.stage.removeChild(container);
           game.newBadges--;
         });
-    }, 4000 * game.newBadges);
+    }, 3000 * game.newBadges);
     game.newBadges++;
 
     game.badges.push(id);
