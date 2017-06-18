@@ -353,6 +353,7 @@ game.keyDown = e => {
     switch (e.keyCode) {
       case 37: game.keys.left = true; break;
       case 39: game.keys.right = true; break;
+      case 32: createjs.Ticker.paused = !createjs.Ticker.paused; break;  
     }
   else if (e.keyCode == 32) game.start();
   if (e.keyCode == 77) {
