@@ -199,24 +199,10 @@ game.onTick = (e) => {
 
 // Just the open screen
 game.showStartScreen = () => {
-  // Clear everything
-  game.stage.removeAllChildren();
-
-  // Image of the screen (static elements)
-  let screen = new createjs.Bitmap(game.queue.getResult('startScreen'));
-  screen.x = screen.y = 0;
-  screen.scaleX = screen.scaleY = 0.5;
-
   // Show high score
   let hs = new createjs.Text(game.highScore.toLocaleString() + " m", "30px riffic", "#fff");
   hs.y = 500;
   hs.x = 40;
-
-  // Create transparent buttons for listening clicks
-  let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
-  startBtn.alpha = 0.01;
-  startBtn.addEventListener('click', game.start);
 
   let instructionsBtn = new createjs.Shape();
   instructionsBtn.graphics.beginFill("#fff").drawRect(0, 42, 140, 138);
@@ -228,55 +214,19 @@ game.showStartScreen = () => {
   statsBtn.alpha = 0.01;
   statsBtn.addEventListener('click', game.showStatsScreen);
 
-  // Add elements to screen
-  game.stage.addChild(screen, hs, startBtn, instructionsBtn, statsBtn);
-
-  // Show mute state
-  game.showMute();
+  game.showScreen('startScreen', [instructionsBtn, statsBtn, hs]);
 }
 
 game.showInstructionsScreen = () => {
-  // Clear everything
-  game.stage.removeAllChildren();
-
-  // Show screen image (static elements)  
-  let screen = new createjs.Bitmap(game.queue.getResult('instructionsScreen'));
-  screen.x = screen.y = 0;
-  screen.scaleX = screen.scaleY = 0.5;
-
-  // Create transparent buttons for listening clicks
-  let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
-  startBtn.alpha = 0.01;
-  startBtn.addEventListener('click', game.start);
-
   let homeBtn = new createjs.Shape();
   homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
-
-  // Add elements to screen
-  game.stage.addChild(screen, startBtn, homeBtn, game.creditsBtn);
-
-  // Show mute status
-  game.showMute();
+  
+  game.showScreen('instructionsScreen', [homeBtn]);
 }
 
 game.showStatsScreen = () => {
-  // Clear everything
-  game.stage.removeAllChildren();
-
-  // Show screen image (static elements)  
-  let screen = new createjs.Bitmap(game.queue.getResult('statsScreen'));
-  screen.x = screen.y = 0;
-  screen.scaleX = screen.scaleY = 0.5;
-
-  // Create transparent buttons for listening clicks
-  let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
-  startBtn.alpha = 0.01;
-  startBtn.addEventListener('click', game.start);
-
   let homeBtn = new createjs.Shape();
   homeBtn.graphics.beginFill("#fff").drawRect(400, 0, 100, 70);
   homeBtn.alpha = 0.01;
@@ -305,22 +255,10 @@ game.showStatsScreen = () => {
   stats.y = 180;
   stats.x = 60;
 
-  // Add elements to screen  
-  game.stage.addChild(screen, startBtn, homeBtn, stats);
-
-  // Show mute status
-  game.showMute();
+  game.showScreen('statsScreen', [homeBtn, stats]);
 }
 
 game.showEndScreen = () => {
-  // Clear all
-  game.stage.removeAllChildren();
-
-  // Show screen image (static elements)  
-  let screen = new createjs.Bitmap(game.queue.getResult('endScreen'));
-  screen.x = screen.y = 0;
-  screen.scaleX = screen.scaleY = 0.5;
-
   // Score of the game that just ended  
   let s = new createjs.Text(game.lastScore.toLocaleString() + " m", "30px riffic", "#fff");
   s.y = 375;
@@ -331,19 +269,31 @@ game.showEndScreen = () => {
   hs.y = 515;
   hs.x = 50;
 
-  // Create transparent buttons for listening clicks  
-  let startBtn = new createjs.Shape();
-  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
-  startBtn.alpha = 0.01;
-  startBtn.addEventListener('click', game.start);
-
   let homeBtn = new createjs.Shape();
   homeBtn.graphics.beginFill("#fff").drawRect(456, 577, 50, 120);
   homeBtn.alpha = 0.01;
   homeBtn.addEventListener('click', game.showStartScreen);
 
+  game.showScreen('endScreen', [s, hs, homeBtn]);
+}
+
+game.showScreen = (screenName, extraElems) => {
+  // Clear all
+  game.stage.removeAllChildren();
+
+  // Show screen image (static elements)  
+  let screen = new createjs.Bitmap(game.queue.getResult(screenName));
+  screen.x = screen.y = 0;
+  screen.scaleX = screen.scaleY = 0.5;
+
+  let startBtn = new createjs.Shape();
+  startBtn.graphics.beginFill("#fff").drawRect(108, 683, 268, 83);
+  startBtn.alpha = 0.01;
+  startBtn.addEventListener('click', game.start);
+
   // Add elements to stage
-  game.stage.addChild(screen, startBtn, homeBtn, hs, s);
+  game.stage.addChild(screen, startBtn);
+  for (e of extraElems) game.stage.addChild(e);
 
   // Show mute status
   game.showMute();
