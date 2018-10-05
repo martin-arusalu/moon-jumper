@@ -1,0 +1,10 @@
+{
+  "instant_games": {
+    "platform_version": "RICH_GAMEPLAY",
+    "custom_update_templates": {
+      "game_played": {
+        "example": "A game has been played"
+      }
+    }
+  }
+}

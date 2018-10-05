@@ -1,3 +1,4 @@
+"use strict";
 // Main object that contains everything exept utility functions.
 let game = {
   started: false,
@@ -12,17 +13,20 @@ let game = {
 
 // After window loads initialize game.
 game.init = () => {
-  game.stage = new createjs.Stage('myCanvas');
-  // getting cookies. Cookie name corresponds to a property in game object
-  game.cookies.forEach(o => game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o)));
-  game.badges = Badge.getFromCookie();
-  // Loading
-  game.load();
-  // Check for new achievements every second
-  game.badgeChecker = window.setInterval(Badge.checkForNewBadges, 1000);
-  // Start ticking.
-  createjs.Ticker.addEventListener('tick', game.onTick);
-  createjs.Ticker.setFPS(60);
+  FBInstant.initializeAsync().then(function() {
+    game.stage = new createjs.Stage('myCanvas');
+    game.cookies.forEach(o => game[o] = isNaN(getCookie(o)) ? 0 : new Number(getCookie(o)));
+    game.badges = Badge.getFromCookie();
+    game.load();
+
+    FBInstant.startGameAsync().then(function() {
+      game.contextId = FBInstant.context.getID();
+      console.log(FBInstant.context);
+      game.badgeChecker = window.setInterval(Badge.checkForNewBadges, 1000);
+      createjs.Ticker.addEventListener('tick', game.onTick);
+      createjs.Ticker.setFPS(60);         
+    });
+  });
 }
 
 game.load = () => {
@@ -72,9 +76,10 @@ game.load = () => {
 
 // While game is loading
 game.progress = e => {
-  let percent = Math.round(e.progress * 100);
+  let percent = Math.ceil(e.progress * 100);
   game.loading.text = "Loading: " + percent + "%"; // Show percentage of loading progress
-  game.stage.update()
+  game.stage.update();
+  FBInstant.setLoadingProgress(percent);
 }
 
 // Resets single game data and starts a new game
@@ -145,6 +150,14 @@ game.end = () => {
   game.totalScore += game.lastScore = game.score;
   game.totalPlatforms += game.lastPlatforms;
   game.totalSprings += game.lastSprings;
+  FBInstant
+    .getLeaderboardAsync('Highest jumpers.' + game.contextId)
+    .then(leaderboard => {
+      console.log(leaderboard.getName());
+      return leaderboard.setScoreAsync(game.score);
+    })
+    .then(() => console.log('Score saved'))
+    .catch(error => console.error(error));
   
   // Set cookies
   let t = new Date(Date.now() + 100000000000); // Set expiration date to looong in the future
