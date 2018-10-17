@@ -34,16 +34,6 @@ class Badge extends createjs.Sprite {
     document.cookie = "badges=" + game.badges.join(',') + "; expires=" + t.toGMTString() + ";";
   }
 
-  static getFromCookie() {
-    let s = getCookie('badges');
-    // If there is a cookie (which is numbers separated with commas)
-      // split the numbers to make an array of string numbers
-      // Then create a new array by converting every string to number
-    if (s) return s.split(',').map(Number);
-    // If no cookie, return empty array.  
-    else return [];
-  }
-
   static checkForNewBadges() {
     // If badges are loaded
     if (game.allBadges != undefined) {
