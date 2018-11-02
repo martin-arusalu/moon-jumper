@@ -7,56 +7,54 @@ const BUILD_FOLDER = './build';
 
 function make() {
   const sourceFiles = [
-      'js/**/*',
-      'css/**/*',
-      'sound/**/*',
-      'graphics/**/*',
-      '!js/mock/**/*',
-      '!css/mock/**/*'
+    'js/**/*',
+    'css/**/*',
+    'sound/**/*',
+    'graphics/**/*',
+    '!js/mock/**/*',
+    '!css/mock/**/*'
   ];
   const sdkPath = SDK_PATH;
 
   return Promise.all([
-      new Promise(function(resolve, reject){
-          gulp.src(sourceFiles, { base: './' })
-          .on('error', reject)
-          .pipe(gulp.dest(BUILD_FOLDER))
-          .on('end', resolve);
-      }),
-      new Promise(function(resolve, reject){
-          gulp.src('./index.html')
-          .on('error', reject)
-          .pipe(htmlreplace({
-              'js': sdkPath
-          }))
-          .pipe(gulp.dest(BUILD_FOLDER))
-          .on('end', resolve);
-      }),
+    new Promise(function (resolve, reject) {
+      gulp.src(sourceFiles, { base: './' })
+        .on('error', reject)
+        .pipe(gulp.dest(BUILD_FOLDER))
+        .on('end', resolve);
+    }),
+    new Promise(function (resolve, reject) {
+      gulp.src('./index.html')
+        .on('error', reject)
+        .pipe(htmlreplace({
+          'js': sdkPath
+        }))
+        .pipe(gulp.dest(BUILD_FOLDER))
+        .on('end', resolve);
+    }),
   ]);
 }
- 
-gulp.task('webserver', function() {
-  gulp.src('./')
+
+gulp.task('webserver', function () {
+  gulp.src('.')
     .pipe(webserver({
       livereload: true,
-      open: true,
-      port: 8081
+      https: true,
+      port: 8081,
+      open: true
     }));
 });
 
-gulp.task('test', function() {
+gulp.task('test', function () {
   make()
-    .then(function() {
-        gulp.src(BUILD_FOLDER)
-          .pipe(webserver({
-              livereload: true,
-              https: true,
-              port: 8081,
-              open: 'https://www.facebook.com/embed/instantgames/'+config.FB_appId+'/player?game_url=https://localhost:8081'
-          }));      
-    })
-    .catch(function(error){
-        console.log('gulp:test failed', error);
+    .then(function () {
+      gulp.src(BUILD_FOLDER)
+        .pipe(webserver({
+          livereload: true,
+          https: true,
+          port: 8081,
+          open: 'https://www.facebook.com/embed/instantgames/' + config.FB_appId + '/player?game_url=https://localhost:8081'
+        }));
     });
 
 });
